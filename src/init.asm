@@ -16,12 +16,16 @@ Init::
 	ld sp, wStack.bottom
 	call StopLCD
 	
-	; Setup OAM library
-	call ResetOAM
-	ld hl, OAMDMA
-	ld bc, OAMDMA.end - OAMDMA
+	; Copy OAM DMA routine to HRAM
+	ld hl, OAMDMASource
+	ld bc, OAMDMASource.end - OAMDMASource
 	ld de, hOAMDMA
 	call CopyBytes
+	; Clear shadow OAM
+	ld hl, wShadowOAM
+	xor a
+	ld bc, wShadowOAM.end - wShadowOAM
+	call ByteFill
 	
 	; Set palettes
 	ld a, %11100100
