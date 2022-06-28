@@ -3,7 +3,7 @@
 
 name = tiles
 src = src/
-obj = ${src}/header.o ${src}/init.o ${src}/memory/hram.o ${src}/memory/wram.o ${src}/video.o ${src}/lib/oam.o ${src}/memmanip.o ${src}/joypad.o
+obj = ${src}/header.o ${src}/init.o ${src}/memory/hram.o ${src}/memory/wram.o ${src}/video.o ${src}/lib/oam.o ${src}/memmanip.o ${src}/joypad.o ${src}/gameinit.o ${src}/mainloop.o
 
 all: ${name}.gb
 

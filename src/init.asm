@@ -42,7 +42,7 @@ Init::
 	or LCDCF_OBJON | LCDCF_OBJ16
 	ld [rLCDC], a
 	
-	; call GameInit
+	call GameInit
 	
 	; Start LCD and enable interrupts
 	call StartLCD
@@ -50,6 +50,4 @@ Init::
 	ld a, IEF_VBLANK
 	ldh [rIE], a
 	
-	jr @
-	
-	; jp MainLoop
+	jp MainLoop
