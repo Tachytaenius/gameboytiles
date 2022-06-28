@@ -1,5 +1,7 @@
 INCLUDE "lib/hardware.asm"
 INCLUDE "inc/constants.asm"
+INC_TILESET_DATA = 0
+INCLUDE "inc/tileset.asm"
 
 SECTION "Game Init", ROM0
 
