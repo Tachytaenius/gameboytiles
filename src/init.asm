@@ -18,7 +18,10 @@ Init::
 	
 	; Setup OAM library
 	call ResetOAM
-	Copy hOAMDMA, OAMDMA
+	ld hl, OAMDMA
+	ld bc, OAMDMA.end - OAMDMA
+	ld de, hOAMDMA
+	call CopyBytes
 	
 	; Set palettes
 	ld a, %11100100
