@@ -3,8 +3,9 @@ INCLUDE "lib/hardware.asm"
 SECTION "OAM DMA Source", ROM0
 
 OAMDMASource::
+	ld a, HIGH(wShadowOAM)
 	ldh [rDMA], a
-	ld a, 40
+	ld a, OAM_COUNT
 :
 	dec a
 	jr nz, :-

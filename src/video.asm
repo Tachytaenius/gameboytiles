@@ -16,7 +16,8 @@ StopLCD::
 	ret
 
 StartLCD::
-	ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ16|LCDCF_OBJOFF
+	ld a, [rLCDC]
+	or LCDCF_ON
 	ld [rLCDC], a
 	ret
 

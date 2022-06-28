@@ -1,7 +1,17 @@
 INCLUDE "lib/hardware.asm"
 INCLUDE "inc/constants.asm"
 
-SECTION "Joypad", ROM0
+SECTION "Joypad Memory", HRAM
+
+hJoypad::
+.down::
+	ds 1
+.pressed::
+	ds 1
+.released::
+	ds 1
+
+SECTION "Update Joypad", ROM0
 
 UpdateJoypad::
 	ld a, P1F_4

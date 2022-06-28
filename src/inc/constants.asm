@@ -1,3 +1,5 @@
+INCLUDE "inc/macros.asm"
+
 STACK_SIZE EQU $80 ; In words, not bytes
 
 JOY_START  EQU 1<<7
@@ -8,3 +10,7 @@ JOY_DOWN   EQU 1<<3
 JOY_UP     EQU 1<<2
 JOY_LEFT   EQU 1<<1
 JOY_RIGHT  EQU 1<<0
+
+	SetEnum
+	Enum TILE_EMPTY
+	Enum TILE_TRINGLE

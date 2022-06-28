@@ -32,9 +32,10 @@ Init::
 	ld [rBGP], a
 	ld [rOBP0], a
 	
-	; Clear frame status
+	; Clear VBlank flag
 	xor a
-	ld [hFrameStatus], a
+	ld [hVBlankFlag], a
+	
 	; Clear joypad
 	ld hl, hJoypad
 	ld [hl+], a
@@ -43,7 +44,7 @@ Init::
 	
 	; Enable sprites
 	ld a, [rLCDC]
-	or LCDCF_OBJON | LCDCF_OBJ16
+	or LCDCF_OBJON
 	ld [rLCDC], a
 	
 	call GameInit

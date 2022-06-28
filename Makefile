@@ -3,7 +3,7 @@
 
 name = tiles
 src = src/
-obj = ${src}/header.o ${src}/init.o ${src}/memory/hram.o ${src}/memory/wram.o ${src}/video.o ${src}/oam.o ${src}/memmanip.o ${src}/joypad.o ${src}/gameinit.o ${src}/mainloop.o
+obj = ${src}/header.o ${src}/init.o ${src}/memory/hram.o ${src}/memory/wram.o ${src}/video.o ${src}/oam.o ${src}/memmanip.o ${src}/joypad.o ${src}/gameinit.o ${src}/mainloop.o ${src}/vblank.o ${src}/tileset.o
 
 all: ${name}.gb
 
@@ -18,4 +18,4 @@ gfx:
 
 ${name}.gb: gfx ${obj}
 	@rgblink -n ${name}.sym -o $@ ${obj}
-	@rgbfix -jv -i XXXX -k XX -l 0x33 -m 0x01 -p 0 -r 0 -t TILES $@
+	@rgbfix -jv -i TILE -k HB -l 0x33 -m 0x01 -p 0 -r 0 -t TILES $@
