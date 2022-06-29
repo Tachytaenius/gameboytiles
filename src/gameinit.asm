@@ -1,16 +1,27 @@
 INCLUDE "lib/hardware.asm"
 INCLUDE "inc/constants.asm"
-INC_TILESET_DATA = 0
-INCLUDE "inc/tileset.asm"
 
 SECTION "Game Init", ROM0
 
 GameInit::
 	; Load tileset
-	ld bc, Tileset.end - Tileset
+	; Init loading
+	ld a, NUM_TILES
+	ld [wCountingBuffer1], a
 	ld hl, Tileset
 	ld de, _VRAM
+:
+	; Copy one tile
+	ld bc, 16
 	call CopyBytes
+	ld a, [wCountingBuffer1]
+	dec a
+	jr z, :+ ; Bail
+	; Prepare for copying next tile
+	ld [wCountingBuffer1], a
+	inc hl ; Skip attributes
+	jr :-
+:
 	
 	; Make sprite 0 a tringle
 	ld hl, wShadowOAM + sizeof_OAM_ATTRS * 0

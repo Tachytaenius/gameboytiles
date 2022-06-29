@@ -4,8 +4,6 @@ INCLUDE "inc/constants.asm"
 SECTION "Main Loop", ROM0
 
 MainLoop::
-	call UpdateJoypad
-	
 	; Wait for VBlank
 	ldh a, [hVBlankFlag]
 	and a
@@ -13,9 +11,8 @@ MainLoop::
 	xor a
 	ldh [hVBlankFlag], a
 	
-	; Update sprites
+	call UpdateJoypad
 	call hOAMDMA
-	
 	call TryMoveTringle
 	
 .finishMainLoop
