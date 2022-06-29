@@ -7,5 +7,8 @@ wStack::
 .bottom::
 	ds 1
 
-wCountingBuffer1::
+wPlayerPos::
+.x::
+	ds 1
+.y::
 	ds 1

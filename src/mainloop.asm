@@ -23,28 +23,39 @@ TryMoveTringle:
 	ldh a, [hJoypad.down]
 	and JOY_UP
 	jr z, .down
-	ld a, [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y]
+	ld a, [wPlayerPos.y]
 	dec a
-	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y], a
+	ld [wPlayerPos.y], a
 .down
 	ldh a, [hJoypad.down]
 	and JOY_DOWN
 	jr z, .left
-	ld a, [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y]
+	ld a, [wPlayerPos.y]
 	inc a
-	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y], a
+	ld [wPlayerPos.y], a
 .left
 	ldh a, [hJoypad.down]
 	and JOY_LEFT
 	jr z, .right
-	ld a, [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_X]
+	ld a, [wPlayerPos.x]
 	dec a
-	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_X], a
+	ld [wPlayerPos.x], a
 .right
 	ldh a, [hJoypad.down]
 	and JOY_RIGHT
-	ret z
-	ld a, [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_X]
+	jr z, .done
+	ld a, [wPlayerPos.x]
 	inc a
+	ld [wPlayerPos.x], a
+.done
+	ld a, [wPlayerPos.x]
+	; ld c, 8
+	; call SimpleMultiply
+	add 8
 	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_X], a
+	ld a, [wPlayerPos.y]
+	; ld c, 8
+	; call SimpleMultiply
+	add 16
+	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y], a
 	ret

@@ -1,23 +1,26 @@
-INCLUDE "inc/macros.asm"
 INCLUDE "inc/constants.asm"
-
-MACRO def_tile
-\2:
-INCBIN \3
-	db \4
-	Enum \1
-	EXPORT \1
+MACRO define_tile
+    DEF \1 RB
+    EXPORT \1
+    SECTION FRAGMENT "Tileset graphics", ROM0
+        INCBIN \3
+    SECTION FRAGMENT "Tileset properties", ROM0
+        db \2
 ENDM
 
-SECTION "Tileset", ROM0
+SECTION FRAGMENT "Tileset graphics", ROM0
+TilesetGraphics::
+SECTION FRAGMENT "Tileset properties", ROM0
+TilesetProperties::
 
-	SetEnum
+    RSRESET
+    define_tile TILE_EMPTY, TILEATTR_NONSOLID, "gfx/empty.2bpp"
+    define_tile TILE_WALL, TILEATTR_SOLID, "gfx/wall.2bpp"
+    define_tile TILE_TRINGLE, TILEATTR_NONSOLID, "gfx/tringle.2bpp"
 
-Tileset::
-	def_tile TILE_EMPTY, .empty, "gfx/empty.2bpp", TILEATTR_NONSOLID
-	def_tile TILE_WALL, .wall, "gfx/wall.2bpp", TILEATTR_SOLID
-	def_tile TILE_TRINGLE, .tringle, "gfx/tringle.2bpp", TILEATTR_NONSOLID
-.end::
+SECTION FRAGMENT "Tileset graphics", ROM0
+TilesetGraphicsEnd::
+SECTION FRAGMENT "Tileset properties", ROM0
+TilesetPropertiesEnd::
 
-	Enum NUM_TILES
-EXPORT NUM_TILES
+DEF NUM_TILES RB 0
