@@ -8,7 +8,7 @@ ByteFill::
     inc c ; same thing; include last byte
     jr .HandleLoop
 .PutByte:
-    ld [hli], a
+    ldi [hl], a
 .HandleLoop:
     dec c
     jr nz, .PutByte
@@ -22,7 +22,7 @@ CopyBytes::
 	inc c ; same thing; include last byte
 	jr .HandleLoop
 .CopyByte:
-	ld a, [hli]
+	ldi a, [hl]
 	ld [de], a
 	inc de
 .HandleLoop:

@@ -37,8 +37,8 @@ Init::
 	ldh [hVBlankFlag], a
 	; Clear joypad
 	ld hl, hJoypad
-	ld [hl+], a
-	ld [hl+], a
+	ldi [hl], a
+	ldi [hl], a
 	ld [hl], a
 	
 	; Enable sprites

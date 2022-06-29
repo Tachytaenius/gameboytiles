@@ -13,11 +13,11 @@ GameInit::
 	; Make sprite 0 a tringle
 	ld hl, wShadowOAM + sizeof_OAM_ATTRS * 0
 	ld a, 0 + 16
-	ld [hli], a
+	ldi [hl], a
 	ld a, 0 + 8
-	ld [hli], a
+	ldi [hl], a
 	ld a, TILE_TRINGLE
-	ld [hli], a
+	ldi [hl], a
 	
 	xor a
 	ld [wPlayerPos.x], a

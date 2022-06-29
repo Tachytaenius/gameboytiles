@@ -3,7 +3,7 @@ INCLUDE "lib/hardware.asm"
 SECTION "Map", ROM0
 
 GetTileAddressFromPosAtHLInHL::
-	ld a, [hl+]
+	ldi a, [hl]
 	ld b, a
 	ld a, [hl]
 	ld c, a
