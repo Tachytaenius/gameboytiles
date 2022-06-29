@@ -19,6 +19,8 @@ TilesetProperties::
     define_tile TILE_TRINGLE, TILEATTR_NONSOLID, "gfx/tringle.2bpp"
 
 SECTION FRAGMENT "Tileset graphics", ROM0
+; .end errors
+; TilesetGraphics.end errors too
 TilesetGraphicsEnd::
 SECTION FRAGMENT "Tileset properties", ROM0
 TilesetPropertiesEnd::

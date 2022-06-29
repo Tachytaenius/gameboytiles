@@ -35,7 +35,6 @@ Init::
 	; Clear VBlank flag
 	xor a
 	ldh [hVBlankFlag], a
-	
 	; Clear joypad
 	ld hl, hJoypad
 	ld [hl+], a

@@ -19,4 +19,8 @@ GameInit::
 	ld a, TILE_TRINGLE
 	ld [hli], a
 	
+	xor a
+	ld [wPlayerPos.x], a
+	ld [wPlayerPos.y], a
+	
 	ret
