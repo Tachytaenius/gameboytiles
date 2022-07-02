@@ -3,7 +3,7 @@ INCLUDE "lib/hardware.asm"
 SECTION "Map", ROM0
 
 GetTileAddressFromPosAtHLInHL::
-	ldi a, [hl]
+	ld a, [hl+]
 	ld b, a
 	ld a, [hl]
 	ld c, a
@@ -26,3 +26,56 @@ GetTileAddressFromBCAsXYInHL::
 	jr nz, :-
 	ret
 
+ClearMap::
+	ld bc, _SCRN0
+	ld d, SCRN_X_B ; number of times to loop
+	
+.rowLoop
+	ld a, TILE_WALL
+	ld [bc], a
+	inc bc
+	
+	ld a, c
+	and %00011111 ; get x component
+	cp SCRN_X_B
+	jr nz, .rowLoop
+	
+.nextRow
+	dec d
+	ret z
+	
+	ld a, c
+	add SCRN_VX_B - SCRN_X_B
+	ld c, a
+	ld a, b
+	adc 0
+	ld b, a
+	
+	jr .rowLoop
+
+LoadMapAtHL::
+	ld bc, _SCRN0
+	ld d, SCRN_X_B ; number of times to loop
+	
+.rowLoop
+	ld a, [hl+]
+	ld [bc], a
+	inc bc
+	
+	ld a, c
+	and %00011111 ; get x component
+	cp SCRN_X_B
+	jr nz, .rowLoop
+	
+.nextRow
+	dec d
+	ret z
+	
+	ld a, c
+	add SCRN_VX_B - SCRN_X_B
+	ld c, a
+	ld a, b
+	adc 0
+	ld b, a
+	
+	jr .rowLoop

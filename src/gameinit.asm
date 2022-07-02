@@ -10,16 +10,20 @@ GameInit::
 	ld de, _VRAM
 	call CopyBytes
 	
+	; Load map
+	ld hl, ExampleMap
+	call LoadMapAtHL
+	
 	; Make sprite 0 a tringle
 	ld hl, wShadowOAM + sizeof_OAM_ATTRS * 0
 	ld a, 0 + 16
-	ldi [hl], a
+	ld [hl+], a
 	ld a, 0 + 8
-	ldi [hl], a
+	ld [hl+], a
 	ld a, TILE_TRINGLE
-	ldi [hl], a
+	ld [hl+], a
 	
-	xor a
+	ld a, 1
 	ld [wPlayerPos.x], a
 	ld [wPlayerPos.y], a
 	
