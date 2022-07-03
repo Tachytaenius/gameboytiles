@@ -16,7 +16,7 @@ TilesetProperties::
 	RSRESET
 	define_tile TILE_EMPTY, TILEATTR_NONSOLID, "gfx/empty.2bpp"
 	define_tile TILE_WALL, TILEATTR_SOLID, "gfx/wall.2bpp"
-	define_tile TILE_TRINGLE, TILEATTR_NONSOLID, "gfx/tringle.2bpp"
+	define_tile TILE_PLAYER, TILEATTR_NONSOLID, "gfx/player.2bpp"
 
 SECTION FRAGMENT "Tileset graphics", ROM0
 ; .end errors

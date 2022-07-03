@@ -1,4 +1,5 @@
 INCLUDE "lib/hardware.asm"
+INCLUDE "inc/constants.asm"
 
 SECTION "Map", ROM0
 
@@ -54,6 +55,10 @@ ClearMap::
 	jr .rowLoop
 
 LoadMapAtHL::
+	ld a, [hl+]
+	ld [wPlayerPos.x], a
+	ld a, [hl+]
+	ld [wPlayerPos.y], a
 	ld bc, _SCRN0
 	ld d, SCRN_X_B ; number of times to loop
 	

@@ -17,5 +17,5 @@ gfx:
 	@rgbasm -i ${src}/ -o $@ $<
 
 ${name}.gb: gfx ${obj}
-	@rgblink -n ${name}.sym -o $@ ${obj}
+	@rgblink -n ${name}.sym -o $@ ${obj} -t
 	@rgbfix -jv -i TILE -k HB -l 0x33 -m 0x01 -p 0 -r 0 -t TILES $@
