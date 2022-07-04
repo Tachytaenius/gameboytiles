@@ -27,37 +27,36 @@ TryMovePlayer:
 	ld b, a
 	ld a, [wPlayerPos.y]
 	ld c, a
-	ld a, DIR_NONE
-	ld d, a
-.moveUp
+	ld d, DIR_NONE
+.tryMoveUp
 	ldh a, [hJoypad.down]
 	and JOY_UP
-	jr z, .moveDown
+	jr z, .tryMoveDown
 	dec c
 	ld d, DIR_UP
-	jr .done
-.moveDown
+	jr .doneTryMove
+.tryMoveDown
 	ldh a, [hJoypad.down]
 	and JOY_DOWN
-	jr z, .moveLeft
+	jr z, .tryMoveLeft
 	inc c
 	ld d, DIR_DOWN
-	jr .done
-.moveLeft
+	jr .doneTryMove
+.tryMoveLeft
 	ldh a, [hJoypad.down]
 	and JOY_LEFT
-	jr z, .moveRight
+	jr z, .tryMoveRight
 	dec b
 	ld d, DIR_LEFT
-	jr .done
-.moveRight
+	jr .doneTryMove
+.tryMoveRight
 	ldh a, [hJoypad.down]
 	and JOY_RIGHT
-	jr z, .done
+	jr z, .doneTryMove
 	inc b
 	ld d, DIR_RIGHT
 	; fallthrough
-.done
+.doneTryMove
 	push bc
 	push de
 	call GetTileAddressFromBCAsXYInHL
