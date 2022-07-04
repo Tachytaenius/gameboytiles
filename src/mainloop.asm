@@ -132,6 +132,7 @@ TryMovePlayer:
 .doneChangingPlayerPos
 	xor a
 	ld [wPlayerMoveProgress], a
+	ld a, DIR_NONE
 	ld [wPlayerMoveDirection], a
 .doneTickingMovement	
 	; Get player sprite position
