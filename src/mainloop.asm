@@ -27,6 +27,8 @@ TryMovePlayer:
 	ld b, a
 	ld a, [wPlayerPos.y]
 	ld c, a
+	ld a, DIR_NONE
+	ld d, a
 .moveUp
 	ldh a, [hJoypad.down]
 	and JOY_UP
