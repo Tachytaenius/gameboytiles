@@ -1,4 +1,4 @@
-section "HRAM", HRAM
+SECTION "HRAM", HRAM
 
 hVBlankFlag::
 	ds 1
