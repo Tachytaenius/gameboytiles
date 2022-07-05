@@ -1,4 +1,4 @@
-*.gb
-*.sym
-*.o
-*.2bpp
+/bin/
+/obj/
+/dep/
+/res/

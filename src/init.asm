@@ -1,4 +1,4 @@
-INCLUDE "inc/macros.asm"
+INCLUDE "include/macros.asm"
 INCLUDE "lib/hardware.asm"
 
 SECTION "Init", ROM0

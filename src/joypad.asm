@@ -1,5 +1,5 @@
 INCLUDE "lib/hardware.asm"
-INCLUDE "inc/constants.asm"
+INCLUDE "include/constants.asm"
 
 SECTION "Joypad Memory", HRAM
 
