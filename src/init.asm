@@ -1,6 +1,11 @@
 INCLUDE "include/macros.asm"
 INCLUDE "lib/hardware.asm"
 
+SECTION "Init Variables", HRAM
+
+hGBCFlag::
+	ds 1
+
 SECTION "Init", ROM0
 
 Init::

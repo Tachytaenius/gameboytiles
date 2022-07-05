@@ -1,4 +1,9 @@
-section	"VBlank IRQ Vector", ROM0[$40]
+SECTION "VBlank Flag", HRAM
+
+hVBlankFlag::
+	ds 1
+
+SECTION "VBlank IRQ Vector", ROM0[$40]
 
 VBlankVector::
 	push af
