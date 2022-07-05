@@ -1,23 +1,6 @@
 INCLUDE "lib/hardware.asm"
 INCLUDE "include/constants.asm"
 
-SECTION "Game Init Variables", WRAM0
-
-wPlayerPos::
-.x::
-	ds 1
-.y::
-	ds 1
-
-wPlayerMoveProgress::
-	ds 1
-
-wPlayerMoveDirection::
-	ds 1
-
-wPlayerMoveSpeed::
-	ds 1
-
 SECTION "Game Init", ROM0
 
 GameInit::
