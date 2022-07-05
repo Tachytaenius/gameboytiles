@@ -34,17 +34,17 @@ UpdateJoypad::
 	cpl
 	ld d, a
 	ld b, a
-	ld a, [hJoypad.down]
+	ldh a, [hJoypad.down]
 	cpl
 	and b
-	ld [hJoypad.pressed], a
-	ld a, [hJoypad.down]
+	ldh [hJoypad.pressed], a
+	ldh a, [hJoypad.down]
 	ld b, a
 	ld a, d
 	cpl
 	and b
 	ld a, b
-	ld [hJoypad.released], a
+	ldh [hJoypad.released], a
 	ld a, d
-	ld [hJoypad.down], a
+	ldh [hJoypad.down], a
 	ret
