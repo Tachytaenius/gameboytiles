@@ -45,30 +45,27 @@ TryMovePlayer:
 	ld a, [wPlayerPos.y]
 	ld c, a
 	ld d, DIR_NONE
+	ld a, [hJoypad.down]
 .tryMoveUp
-	ldh a, [hJoypad.down]
-	and JOY_UP
+	bit JOY_UP_BIT, a
 	jr z, .tryMoveDown
 	dec c
 	ld d, DIR_UP
 	jr .doneTryMove
 .tryMoveDown
-	ldh a, [hJoypad.down]
-	and JOY_DOWN
+	bit JOY_DOWN_BIT, a
 	jr z, .tryMoveLeft
 	inc c
 	ld d, DIR_DOWN
 	jr .doneTryMove
 .tryMoveLeft
-	ldh a, [hJoypad.down]
-	and JOY_LEFT
+	bit JOY_LEFT_BIT, a
 	jr z, .tryMoveRight
 	dec b
 	ld d, DIR_LEFT
 	jr .doneTryMove
 .tryMoveRight
-	ldh a, [hJoypad.down]
-	and JOY_RIGHT
+	bit JOY_RIGHT_BIT, a
 	jr z, .doneTryMove
 	inc b
 	ld d, DIR_RIGHT
