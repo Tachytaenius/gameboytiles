@@ -15,20 +15,20 @@ SECTION "Update Joypad", ROM0
 
 UpdateJoypad::
 	ld a, P1F_4
-	ld [rP1], a
-	ld a, [rP1]
-	ld a, [rP1]
-	ld a, [rP1]
-	ld a, [rP1]
+	ldh [rP1], a
+	ldh a, [rP1]
+	ldh a, [rP1]
+	ldh a, [rP1]
+	ldh a, [rP1]
 	and $0F
 	swap a
 	ld b, a
 	ld a, P1F_5
-	ld [rP1], a
-	ld a, [rP1]
-	ld a, [rP1]
-	ld a, [rP1]
-	ld a, [rP1]
+	ldh [rP1], a
+	ldh a, [rP1]
+	ldh a, [rP1]
+	ldh a, [rP1]
+	ldh a, [rP1]
 	and $0F
 	or b
 	cpl
