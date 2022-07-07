@@ -29,5 +29,7 @@ GameInit::
 	ld [wPlayerMoveProgress], a
 	ld a, DIR_NONE
 	ld [wPlayerMoveDirection], a
+	ld a, AXIS_HORIZONTAL
+	ld [wPlayerMovementPriority], a
 	
 	ret
