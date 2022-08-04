@@ -25,6 +25,7 @@ SECTION "Main Loop", ROM0
 
 MainLoop::
 	; Wait for VBlank
+	halt
 	ldh a, [hVBlankFlag]
 	and a
 	jr z, MainLoop
@@ -41,54 +42,102 @@ MainLoop::
 TryMovePlayer:
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
-	jr nz, .skipAllowingMove
+	jp nz, .skipAllowingMove
 	
 	ld a, [hJoypad.down]
-	; b=horizontal?,c=vertical?
+	; next: b = horizontal?, c = vertical?
+	; next: e = to-be-filtered inputs
+	ld bc, 0
+	ld e, 0
 .checkUp
 	bit JOY_UP_BIT, a
 	jr z, .checkDown
+	set JOY_UP_BIT, e
 	ld c, 1
 .checkDown
 	bit JOY_DOWN_BIT, a
 	jr z, .checkLeft
+	set JOY_DOWN_BIT, e
 	ld c, 1
 .checkLeft
 	bit JOY_LEFT_BIT, a
 	jr z, .checkRight
+	set JOY_LEFT_BIT, e
 	ld b, 1
 .checkRight
 	bit JOY_RIGHT_BIT, a
 	jr z, .doneCheckingInput
+	set JOY_RIGHT_BIT, e
 	ld b, 1
 .doneCheckingInput
-	
-	; if vertical and horizontal, then use wPlayerMovementPriority
-	; else, set priority to axis currently not being pressed
+	; if vertical and horizontal, then use wPlayerMovementPriority to filter out non-prioritised inputs
+	; else, set priority to aixs currently not being pressed
 	ld a, b
 	and c
-	jr nz, :+
-	; are we moving horizontally?
-	dec b ; z if was 1, nz if was 0
-	jr nz, .vertical
-	; we are moving horizontally, make vertical the priority
-	ld a, AXIS_VERTICAL
-	ld [wPlayerMovementPriority], a
-	jr :+
-.vertical
-	ld a, AXIS_HORIZONTAL
-	ld [wPlayerMovementPriority], a
-:
+	jr z, .setPriorityToOtherAxis
+	; if ...
 	ld a, [wPlayerMovementPriority]
 	ASSERT AXIS_HORIZONTAL == 0
 	and a
-	jr nz, .doVertical
-	call JoyToInputHorizontalFirst ; b=x,c=y,d=direction
-	jr .doneCallingJoyToInput
-.doVertical
-	call JoyToInputVerticalFirst
-.doneCallingJoyToInput
+	ld a, e
+	jr nz, .filterOutHorizontalInputs ; vertical has priority
+	; horizontal has priority, filter out vertical inputs
+	and JOY_LEFT_MASK | JOY_RIGHT_MASK
+	jr .doneCheckingAndUsingPriority
+.filterOutHorizontalInputs
+	and JOY_UP_MASK | JOY_DOWN_MASK
+	jr .doneCheckingAndUsingPriority
+.setPriorityToOtherAxis
+	; else ...
+	; are we moving horizontally?
+	dec b ; z if was 1, nz if was 0
+	jr nz, .changePriorityToHorizontal ; we are moving vertically
+	; we are moving horizontally, make vertical the priority
+	ld a, AXIS_VERTICAL
+	ld [wPlayerMovementPriority], a
+	ld a, e ; use original inputs as filtered inputs since nothing needed filtering
+	jr .doneCheckingAndUsingPriority
+.changePriorityToHorizontal
+	ld a, AXIS_HORIZONTAL
+	ld [wPlayerMovementPriority], a
+	ld a, e ; use original inputs as filtered inputs since nothing needed filtering
+	; fallthrough
+.doneCheckingAndUsingPriority
 	
+	; now: a = filtered inputs
+	; next: b = x, c = y, d = direction
+	ld e, a ; backup
+	ld a, [wPlayerPos.x]
+	ld b, a
+	ld a, [wPlayerPos.y]
+	ld c, a
+	ld d, DIR_NONE
+	ld a, e ; restore
+.tryMoveLeft
+	bit JOY_LEFT_BIT, a
+	jr z, .tryMoveRight
+	dec b
+	ld d, DIR_LEFT
+	jr .doneTryMovement
+.tryMoveRight
+	bit JOY_RIGHT_BIT, a
+	jr z, .tryMoveUp
+	inc b
+	ld d, DIR_RIGHT
+	jr .doneTryMovement
+.tryMoveUp
+	bit JOY_UP_BIT, a
+	jr z, .tryMoveDown
+	dec c
+	ld d, DIR_UP
+	jr .doneTryMovement
+.tryMoveDown
+	bit JOY_DOWN_BIT, a
+	jr z, .doneTryMovement
+	inc c
+	ld d, DIR_DOWN
+.doneTryMovement
+
 	push bc
 	push de
 	call GetTileAddressFromBCAsXYInHL
@@ -110,7 +159,7 @@ TryMovePlayer:
 	add hl, bc
 	ld a, [hl]
 	pop bc
-	and TILEATTR_SOLID
+	and TILEATTR_SOLID_MASK
 	jr nz, .skipAllowingMove
 	
 	; Allow move
@@ -237,68 +286,4 @@ ENDR
 	add 16
 	ld [wShadowOAM + sizeof_OAM_ATTRS * 0 + OAMA_Y], a
 	
-	ret
-
-JoyToInputHorizontalFirst::
-	ld a, [wPlayerPos.x]
-	ld b, a
-	ld a, [wPlayerPos.y]
-	ld c, a
-	ld d, DIR_NONE
-	ld a, [hJoypad.down]
-.tryMoveLeft
-	bit JOY_LEFT_BIT, a
-	jr z, .tryMoveRight
-	dec b
-	ld d, DIR_LEFT
-	ret
-.tryMoveRight
-	bit JOY_RIGHT_BIT, a
-	jr z, .tryMoveUp
-	inc b
-	ld d, DIR_RIGHT
-	ret
-.tryMoveUp
-	bit JOY_UP_BIT, a
-	jr z, .tryMoveDown
-	dec c
-	ld d, DIR_UP
-	ret
-.tryMoveDown
-	bit JOY_DOWN_BIT, a
-	ret z
-	inc c
-	ld d, DIR_DOWN
-	ret
-
-JoyToInputVerticalFirst::
-	ld a, [wPlayerPos.x]
-	ld b, a
-	ld a, [wPlayerPos.y]
-	ld c, a
-	ld d, DIR_NONE
-	ld a, [hJoypad.down]
-.tryMoveUp
-	bit JOY_UP_BIT, a
-	jr z, .tryMoveDown
-	dec c
-	ld d, DIR_UP
-	ret
-.tryMoveDown
-	bit JOY_DOWN_BIT, a
-	jr z, .tryMoveLeft
-	inc c
-	ld d, DIR_DOWN
-	ret
-.tryMoveLeft
-	bit JOY_LEFT_BIT, a
-	jr z, .tryMoveRight
-	dec b
-	ld d, DIR_LEFT
-	ret
-.tryMoveRight
-	bit JOY_RIGHT_BIT, a
-	ret z
-	inc b
-	ld d, DIR_RIGHT
 	ret

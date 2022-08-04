@@ -14,9 +14,9 @@ SECTION FRAGMENT "Tileset properties", ROM0
 TilesetProperties::
 
 	RSRESET
-	define_tile TILE_EMPTY, TILEATTR_NONSOLID, "res/empty.2bpp"
-	define_tile TILE_WALL, TILEATTR_SOLID, "res/wall.2bpp"
-	define_tile TILE_PLAYER, TILEATTR_NONSOLID, "res/player.2bpp"
+	define_tile TILE_EMPTY, TILEATTR_NONSOLID_MASK, "res/empty.2bpp"
+	define_tile TILE_WALL, TILEATTR_SOLID_MASK, "res/wall.2bpp"
+	define_tile TILE_PLAYER, TILEATTR_NONSOLID_MASK, "res/player.2bpp"
 
 SECTION FRAGMENT "Tileset graphics", ROM0
 ; .end errors
