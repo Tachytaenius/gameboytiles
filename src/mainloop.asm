@@ -48,28 +48,17 @@ TryMovePlayer:
 	; next: b = horizontal?, c = vertical?
 	; next: e = to-be-filtered inputs
 	ld bc, 0
-	ld e, 0
-.checkUp
-	bit JOY_UP_BIT, a
-	jr z, .checkDown
-	set JOY_UP_BIT, e
-	ld c, 1
-.checkDown
-	bit JOY_DOWN_BIT, a
-	jr z, .checkLeft
-	set JOY_DOWN_BIT, e
-	ld c, 1
-.checkLeft
-	bit JOY_LEFT_BIT, a
-	jr z, .checkRight
-	set JOY_LEFT_BIT, e
-	ld b, 1
-.checkRight
-	bit JOY_RIGHT_BIT, a
-	jr z, .doneCheckingInput
-	set JOY_RIGHT_BIT, e
-	ld b, 1
-.doneCheckingInput
+	ld e, a
+	and (1 << JOY_UP_BIT) | (1 << JOY_DOWN_BIT)
+	jr z, .notVertical
+	inc c
+.notVertical
+	ld a, e
+	and (1 << JOY_LEFT_BIT) | (1 << JOY_RIGHT_BIT)
+	jr z, .notHorizontal
+	inc b
+.notHorizontal
+	; done checking input
 	; if vertical and horizontal, then use wPlayerMovementPriority to filter out non-prioritised inputs
 	; else, set priority to aixs currently not being pressed
 	ld a, b
