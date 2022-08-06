@@ -3,22 +3,22 @@ INCLUDE "lib/hardware.asm"
 SECTION "Video", ROM0
 
 StopLCD::
-	ld a, [rLCDC]
+	ldh a, [rLCDC]
 	rlca
 	ret nc
 .wait
-	ld a, [rLY]
+	ldh a, [rLY]
 	cp SCRN_Y
 	jr c, .wait
-	ld a, [rLCDC]
+	ldh a, [rLCDC]
 	res 7, a ; BG display
-	ld [rLCDC], a
+	ldh [rLCDC], a
 	ret
 
 StartLCD::
-	ld a, [rLCDC]
+	ldh a, [rLCDC]
 	or LCDCF_ON
-	ld [rLCDC], a
+	ldh [rLCDC], a
 	ret
 
 WaitVRAMAccess::

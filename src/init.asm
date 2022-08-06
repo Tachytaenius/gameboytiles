@@ -34,8 +34,8 @@ Init::
 	
 	; Set palettes
 	ld a, %11100100
-	ld [rBGP], a
-	ld [rOBP0], a
+	ldh [rBGP], a
+	ldh [rOBP0], a
 	
 	; Clear VBlank flag
 	xor a
@@ -47,9 +47,9 @@ Init::
 	ld [hl], a
 	
 	; Enable sprites
-	ld a, [rLCDC]
+	ldh a, [rLCDC]
 	or LCDCF_OBJON
-	ld [rLCDC], a
+	ldh [rLCDC], a
 	
 	call GameInit
 	
