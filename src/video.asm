@@ -1,4 +1,4 @@
-INCLUDE "lib/hardware.asm"
+INCLUDE "lib/hardware.inc"
 
 SECTION "Video", ROM0
 

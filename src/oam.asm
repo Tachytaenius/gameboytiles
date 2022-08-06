@@ -1,4 +1,4 @@
-INCLUDE "lib/hardware.asm"
+INCLUDE "lib/hardware.inc"
 
 SECTION "OAM DMA Source", ROM0
 

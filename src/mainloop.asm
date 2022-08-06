@@ -1,5 +1,5 @@
-INCLUDE "lib/hardware.asm"
-INCLUDE "include/constants.asm"
+INCLUDE "lib/hardware.inc"
+INCLUDE "include/constants.inc"
 
 SECTION "Main Loop Variables", WRAM0
 

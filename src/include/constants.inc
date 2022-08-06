@@ -1,4 +1,4 @@
-INCLUDE "lib/hardware.asm"
+INCLUDE "lib/hardware.inc"
 
 STACK_SIZE EQU $80 ; In words, not bytes
 

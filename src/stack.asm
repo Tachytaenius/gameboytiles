@@ -1,4 +1,4 @@
-INCLUDE "include/constants.asm"
+INCLUDE "include/constants.inc"
 
 SECTION "Stack", WRAM0
 
