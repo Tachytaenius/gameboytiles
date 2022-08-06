@@ -84,8 +84,23 @@ LoadMapAtHLBankA::
 	jr .rowLoop
 
 .loadEvents
+	ld a, [hl+] ; number of times to loop
+	and a
+	ret z ; don't start if the loop count is 0
+	ld b, a
+	inc b
+	
+.loadEventLoop
+	ld a, [hl+] ; event type
+	
+	cp MAP_EVENT_SPAWN
+	jr nz, :+
 	ld a, [hl+]
 	ld [wPlayerPos.x], a
 	ld a, [hl+]
 	ld [wPlayerPos.y], a
+:
+	
+	dec b
+	jr nz, .loadEventLoop
 	ret
