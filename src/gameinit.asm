@@ -11,8 +11,9 @@ GameInit::
 	call CopyBytes
 	
 	; Load map
+	ld a, BANK(ExampleMap)
 	ld hl, ExampleMap
-	call LoadMapAtHL
+	call LoadMapAtHLBankA
 	
 	; Make sprite 0 a player
 	ld hl, wShadowOAM + sizeof_OAM_ATTRS * 0

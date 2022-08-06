@@ -54,13 +54,11 @@ ClearMap::
 	
 	jr .rowLoop
 
-LoadMapAtHL::
-	ld a, [hl+]
-	ld [wPlayerPos.x], a
-	ld a, [hl+]
-	ld [wPlayerPos.y], a
+LoadMapAtHLBankA::
+	rst SwapBank ; is not backed up
+	
 	ld bc, _SCRN0
-	ld d, SCRN_X_B ; number of times to loop
+	ld d, SCRN_Y_B ; number of times to loop
 	
 .rowLoop
 	ld a, [hl+]
@@ -74,7 +72,7 @@ LoadMapAtHL::
 	
 .nextRow
 	dec d
-	ret z
+	jr z, .loadEvents
 	
 	ld a, c
 	add SCRN_VX_B - SCRN_X_B
@@ -84,3 +82,10 @@ LoadMapAtHL::
 	ld b, a
 	
 	jr .rowLoop
+
+.loadEvents
+	ld a, [hl+]
+	ld [wPlayerPos.x], a
+	ld a, [hl+]
+	ld [wPlayerPos.y], a
+	ret
