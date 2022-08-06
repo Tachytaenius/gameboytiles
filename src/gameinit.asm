@@ -32,5 +32,7 @@ GameInit::
 	ld [wPlayerMoveDirection], a
 	ld a, AXIS_HORIZONTAL
 	ld [wPlayerMovementPriority], a
+	ld a, TRUE
+	ld [wPlayerSpawning], a
 	
 	ret

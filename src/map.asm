@@ -95,6 +95,12 @@ LoadMapAtHLBankA::
 	
 	cp MAP_EVENT_SPAWN
 	jr nz, :+
+	ld a, [wPlayerSpawning]
+	ASSERT FALSE == 0
+	and a
+	jr z, :+
+	xor a
+	ld [wPlayerSpawning], a
 	ld a, [hl+]
 	ld [wPlayerPos.x], a
 	ld a, [hl+]

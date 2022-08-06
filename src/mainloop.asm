@@ -3,6 +3,9 @@ INCLUDE "include/constants.inc"
 
 SECTION "Main Loop Variables", WRAM0
 
+wPlayerSpawning::
+	ds 1 ; If this is FALSE, skip player spawn position events
+
 wPlayerPos::
 .x::
 	ds 1
