@@ -37,4 +37,6 @@ GameInit::
 	ld a, AXIS_HORIZONTAL
 	ld [wPlayerMovementPriority], a
 	
+	call UpdatePlayerSpritePos
+	
 	ret

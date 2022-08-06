@@ -133,7 +133,7 @@ TryMovePlayer:
 	pop de
 	pop bc
 	
-	and TILEPROP_SOLID_MASK
+	and TILEPROP_SOLIDITY_MASK
 	jr nz, .skipAllowingMove
 	
 	; Allow move
@@ -188,7 +188,46 @@ TryMovePlayer:
 	ld [wPlayerMoveProgress], a
 	ld a, DIR_NONE
 	ld [wPlayerMoveDirection], a
+	
+	; check for warp
+	ld a, [wPlayerPos.x]
+	ld b, a
+	ld a, [wPlayerPos.y]
+	ld c, a
+	call GetTilePropertiesAtBCAsXY
+	and TILEPROP_WARP_MASK
+	jr z, .doneTickingMovement
+	; we stepped onto a warp
+	ld b, a ; number of times to step forwards in the search (0 is no warp, 1 is 0 times, 2 is 1 time, etc)
+	ld a, [wCurMapWarpsAddress]
+	ld l, a
+	ld a, [wCurMapWarpsAddress + 1]
+	ld h, a
+	ld de, sizeof_WARP_ATTRS ; for add hl, de
+.warpSearchLoop
+	dec b
+	jr z, .warpSearchLoopDone
+	add hl, de
+	jr .warpSearchLoop
+.warpSearchLoopDone
+	ld a, [hl+]
+	ld [wPlayerPos.x], a
+	ld a, [hl+]
+	ld [wPlayerPos.y], a
+	ld a, [hl+]
+	ld b, a ; backup bank
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld a, b
+	call StopLCD
+	call LoadMapAtHLBankA
+	call StartLCD
+	
 .doneTickingMovement
+	; fallthrough
+	
+UpdatePlayerSpritePos::
 	; Get player sprite position
 	; x
 	ld a, [wPlayerPos.x]

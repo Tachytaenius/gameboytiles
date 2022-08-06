@@ -62,7 +62,7 @@ LoadMapAtHLBankA::
 	
 .nextRow
 	dec d
-	jr z, .loadEvents
+	jr z, .finishLoadingTileTypes
 	
 	ld a, c
 	add SCRN_VX_B - SCRN_X_B
@@ -73,28 +73,26 @@ LoadMapAtHLBankA::
 	
 	jr .rowLoop
 
-.loadEvents
-	ld a, [hl+] ; number of times to loop
-	and a
-	ret z ; don't start if the loop count is 0
-	ld b, a
-	inc b
+.finishLoadingTileTypes
+	; skip over tile properties
+	ld bc, SCRN_X_B * SCRN_Y_B
+	add hl, bc
 	
-.loadEventLoop
-	ld a, [hl+] ; event type
+	; save warps address
+	ld a, l
+	ld [wCurMapWarpsAddress], a
+	ld a, h
+	ld [wCurMapWarpsAddress + 1], a
 	
-;	cp BLAH
-;	jr nz, :+
-;	do blah
-;:
-	
-	dec b
-	jr nz, .loadEventLoop
 	ret
 
 SECTION "Map Information", WRAM0
 
 wCurMapBank::
 	ds 1
+
 wCurMapAddress::
+	ds 2
+
+wCurMapWarpsAddress::
 	ds 2
