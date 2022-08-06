@@ -3,9 +3,6 @@ INCLUDE "include/constants.inc"
 
 SECTION "Main Loop Variables", WRAM0
 
-wPlayerSpawning::
-	ds 1 ; If this is FALSE, skip player spawn position events
-
 wPlayerPos::
 .x::
 	ds 1
@@ -132,26 +129,11 @@ TryMovePlayer:
 
 	push bc
 	push de
-	call GetTileAddressFromBCAsXYInHL
+	call GetTilePropertiesAtBCAsXY
 	pop de
-	
-	; wait for VBlank
-	push af
-:
-	ldh a, [rSTAT]
-	and a, STATF_BUSY
-	jr nz, :-
-	pop af
-	
-	; Get properties for tile at bc as xy
-	ld a, [hl]
-	ld hl, TilesetProperties
-	ld b, 0
-	ld c, a
-	add hl, bc
-	ld a, [hl]
 	pop bc
-	and TILEATTR_SOLID_MASK
+	
+	and TILEPROP_SOLID_MASK
 	jr nz, .skipAllowingMove
 	
 	; Allow move

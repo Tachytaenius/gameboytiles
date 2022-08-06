@@ -5,15 +5,19 @@ SECTION "Game Init", ROM0
 
 GameInit::
 	; Load tileset
-	ld bc, TilesetGraphicsEnd - TilesetGraphics
+	ld bc, TilesetGraphics.end - TilesetGraphics
 	ld hl, TilesetGraphics
 	ld de, _VRAM
 	call CopyBytes
 	
 	; Load map
-	ld a, BANK(ExampleMap)
-	ld hl, ExampleMap
+	ld a, BANK(StartingMap)
+	ld hl, StartingMap
 	call LoadMapAtHLBankA
+	ld a, SPAWN_X
+	ld [wPlayerPos.x], a
+	ld a, SPAWN_Y
+	ld [wPlayerPos.y], a
 	
 	; Make sprite 0 a player
 	ld hl, wShadowOAM + sizeof_OAM_ATTRS * 0
@@ -32,7 +36,5 @@ GameInit::
 	ld [wPlayerMoveDirection], a
 	ld a, AXIS_HORIZONTAL
 	ld [wPlayerMovementPriority], a
-	ld a, TRUE
-	ld [wPlayerSpawning], a
 	
 	ret
