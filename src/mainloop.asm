@@ -21,6 +21,9 @@ wPlayerMoveSpeed::
 wPlayerMovementPriority::
 	ds 1
 
+wLastPlayerInputs::
+	ds 1
+
 SECTION "Main Loop", ROM0
 
 MainLoop::
@@ -39,59 +42,139 @@ MainLoop::
 .finishMainLoop
 	jp MainLoop
 
+SetPriorityToCurrentInput:
+	ldh a, [hJoypad.down]
+	
+.checkNewInputLeft
+	bit JOY_LEFT_BIT, a
+	jr z, .checkNewInputRight
+	ld a, DIR_LEFT
+	ld [wPlayerMovementPriority], a
+	ret
+
+.checkNewInputRight
+	bit JOY_RIGHT_BIT, a
+	jr z, .checkNewInputUp
+	ld a, DIR_RIGHT
+	ld [wPlayerMovementPriority], a
+	ret
+
+.checkNewInputUp
+	bit JOY_UP_BIT, a
+	jr z, .checkNewInputDown
+	ld a, DIR_UP
+	ld [wPlayerMovementPriority], a
+	ret
+
+.checkNewInputDown
+	bit JOY_DOWN_BIT, a
+	ret z
+	ld a, DIR_DOWN
+	ld [wPlayerMovementPriority], a
+	ret
+
 TryMovePlayer:
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
-	jp nz, .skipAllowingMove
+	jp nz, .skipAllowingMove	
 	
-	ld a, [hJoypad.down]
-	; next: b = horizontal?, c = vertical?
-	; next: e = to-be-filtered inputs
-	ld bc, 0
-	ld e, a
-	and (1 << JOY_UP_BIT) | (1 << JOY_DOWN_BIT)
-	jr z, .notVertical
-	inc c
-.notVertical
-	ld a, e
-	and (1 << JOY_LEFT_BIT) | (1 << JOY_RIGHT_BIT)
-	jr z, .notHorizontal
-	inc b
-.notHorizontal
-	; done checking input
-	; if vertical and horizontal, then use wPlayerMovementPriority to filter out non-prioritised inputs
-	; else, set priority to aixs currently not being pressed
+	ldh a, [hJoypad.down] ; get inputs
+	ld b, a
+	
+	; if the priority input was un-inputted since last movement check, then set priority input to the first found direction being inputted
+	ld a, [wLastPlayerInputs]
+	ld c, a
 	ld a, b
+	cpl
 	and c
-	jr z, .setPriorityToOtherAxis
-	; if ...
+	; now: a contains inputs released since last movement check
+	ld c, a ; backup
 	ld a, [wPlayerMovementPriority]
-	ASSERT AXIS_HORIZONTAL == 0
-	and a
-	ld a, e
-	jr nz, .filterOutHorizontalInputs ; vertical has priority
-	; horizontal has priority, filter out vertical inputs
-	and JOY_LEFT_MASK | JOY_RIGHT_MASK
-	jr .doneCheckingAndUsingPriority
-.filterOutHorizontalInputs
-	and JOY_UP_MASK | JOY_DOWN_MASK
-	jr .doneCheckingAndUsingPriority
-.setPriorityToOtherAxis
-	; else ...
-	; are we moving horizontally?
-	dec b ; z if was 1, nz if was 0
-	jr nz, .changePriorityToHorizontal ; we are moving vertically
-	; we are moving horizontally, make vertical the priority
-	ld a, AXIS_VERTICAL
+.checkPriorityUp1
+	cp DIR_UP
+	jr nz, .checkPriorityRight1
+	ld a, c ; restore
+	and JOY_UP_MASK
+	call nz, SetPriorityToCurrentInput
+	jr .doneCheckingPriority1
+.checkPriorityRight1
+	cp DIR_RIGHT
+	jr nz, .checkPriorityDown1
+	ld a, c
+	and JOY_RIGHT_MASK
+	call nz, SetPriorityToCurrentInput
+	jr .doneCheckingPriority1
+.checkPriorityDown1
+	cp DIR_DOWN
+	jr nz, .priorityLeft1
+	ld a, c
+	and JOY_DOWN_MASK
+	call nz, SetPriorityToCurrentInput
+	jr .doneCheckingPriority1
+.priorityLeft1
+	ld a, c
+	and JOY_LEFT_MASK
+	call nz, SetPriorityToCurrentInput
+.doneCheckingPriority1
+	
+	; if a down input has been pressed since the last movement input check, set it as priority
+	ld a, [wLastPlayerInputs]
+	cpl
+	and b ; b = inputs
+	; a = new inputs since last movement input check
+.checkNewInputLeft
+	bit JOY_LEFT_BIT, a
+	jr z, .checkNewInputRight
+	ld a, DIR_LEFT
 	ld [wPlayerMovementPriority], a
-	ld a, e ; use original inputs as filtered inputs since nothing needed filtering
-	jr .doneCheckingAndUsingPriority
-.changePriorityToHorizontal
-	ld a, AXIS_HORIZONTAL
+	jr .doneCheckingNewInput
+.checkNewInputRight
+	bit JOY_RIGHT_BIT, a
+	jr z, .checkNewInputUp
+	ld a, DIR_RIGHT
 	ld [wPlayerMovementPriority], a
-	ld a, e ; use original inputs as filtered inputs since nothing needed filtering
-	; fallthrough
-.doneCheckingAndUsingPriority
+	jr .doneCheckingNewInput
+.checkNewInputUp
+	bit JOY_UP_BIT, a
+	jr z, .checkNewInputDown
+	ld a, DIR_UP
+	ld [wPlayerMovementPriority], a
+	jr .doneCheckingNewInput
+.checkNewInputDown
+	bit JOY_DOWN_BIT, a
+	jr z, .doneCheckingNewInput
+	ld a, DIR_DOWN
+	ld [wPlayerMovementPriority], a
+.doneCheckingNewInput
+	
+	; save inputs for next frame
+	ld a, b ; inputs
+	ld [wLastPlayerInputs], a
+	
+	; filter inputs
+	ld a, [wPlayerMovementPriority]
+.checkPriorityUp2
+	cp DIR_UP
+	jr nz, .checkPriorityRight2
+	ld a, b ; inputs
+	and ~(JOY_RIGHT_MASK | JOY_DOWN_MASK | JOY_LEFT_MASK)
+	jr .doneCheckingPriority2
+.checkPriorityRight2
+	cp DIR_RIGHT
+	jr nz, .checkPriorityDown2
+	ld a, b
+	and ~(JOY_UP_MASK | JOY_DOWN_MASK | JOY_LEFT_MASK)
+	jr .doneCheckingPriority2
+.checkPriorityDown2
+	cp DIR_DOWN
+	jr nz, .priorityLeft2
+	ld a, b
+	and ~(JOY_RIGHT_MASK | JOY_UP_MASK | JOY_LEFT_MASK)
+	jr .doneCheckingPriority2
+.priorityLeft2
+	ld a, b
+	and ~(JOY_RIGHT_MASK | JOY_DOWN_MASK | JOY_UP_MASK)
+.doneCheckingPriority2
 	
 	; now: a = filtered inputs
 	; next: b = x, c = y, d = direction
@@ -126,7 +209,7 @@ TryMovePlayer:
 	inc c
 	ld d, DIR_DOWN
 .doneTryMovement
-
+	
 	push bc
 	push de
 	call GetTilePropertiesAtBCAsXY
