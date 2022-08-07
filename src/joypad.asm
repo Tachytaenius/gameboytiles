@@ -38,13 +38,13 @@ UpdateJoypad::
 	
 	; put buttons not held last frame but held this frame at hJoypad.pressed
 	ld b, a
-	ldh a, [hJoypad.down]
+	ldh a, [hJoypad.down] ; last frame's
 	cpl
 	and b
 	ldh [hJoypad.pressed], a
 	
 	; put buttons held last frame but not held this frame at hJoypad.released
-	ldh a, [hJoypad.down]
+	ldh a, [hJoypad.down] ; last frame's
 	ld b, a
 	ld a, d
 	cpl
