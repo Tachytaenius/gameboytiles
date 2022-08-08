@@ -303,9 +303,7 @@ TryMovePlayer:
 	ld h, [hl]
 	ld l, a
 	ld a, b
-	call StopLCD
 	call LoadMapAtHLBankA
-	call StartLCD
 	
 .doneTickingMovement
 	; fallthrough

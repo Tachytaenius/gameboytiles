@@ -51,6 +51,10 @@ LoadMapAtHLBankA::
 	ld d, SCRN_Y_B ; number of times to loop
 	
 .rowLoop
+	ldh a, [rSTAT]
+	and STATF_BUSY
+	jr nz, .rowLoop
+	
 	ld a, [hl+]
 	ld [bc], a
 	inc bc
