@@ -1,0 +1,38 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffa0a0a4",
+            "id": 1,
+            "members": [
+                {
+                    "name": "destinationMap",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "destinationX",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "destinationY",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "Warp",
+            "type": "class",
+            "useAs": [
+                "property",
+                "layer"
+            ]
+        }
+    ]
+}

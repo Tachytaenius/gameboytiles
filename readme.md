@@ -1,4 +1,20 @@
 # Game Boy Tiles Demo
 
 Build using cygwin or WSL or some other POSIX environment if you are using Windows, Windows is not supported
-Requires RGBDS (and one of the tools in this project I don't use yet (hopefully I will remember to change this if I ever do use it) requires Python 3)
+
+Requires RGBDS, Python 3, Lua, and Tiled
+
+## making maps
+
+The tiled project is in src/res/tiled, please edit Tiled data with the project open
+
+### defining warps
+
+In the Tiled project, use the Warp custom property type in a map's custom properties (map -> map properties), named "warp1" to "warp15" to define the map's at-most-15 warp destinations. Destination map name doesn't need the x (for ROMX) prefix.
+
+### The layers
+
+You can adjust the opacity of each layer as needed for easier editing
+- "Warps" uses the Warps tileset and defines which warp destination (or none) a tile references
+- "Types" is the displayed tiles and uses the Tileset tileset
+- "Collision" is the collision map and uses the Boolean tileset, true (black) (1) for solid collision

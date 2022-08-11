@@ -113,6 +113,16 @@ res/%.pb16: src/tools/pb16.py res/%
 	@mkdir -p $(@D)
 	$^ $@
 
+# Export tiled maps to json
+res/%.tmj: res/tiled/maps/%.tmx
+	@mkdir -p $(@D)
+	tiled --export-map --embed-tilesets $^ $@
+
+# Convert tiled map exports to assembly files and INCBIN'd map data files
+res/maps/%.inc res/maps/%-tile-types.bin res/maps/%-tile-properties.bin: src/tools/tmj2game.lua res/%.tmj
+	@mkdir -p $(@D)
+	lua $^ res/maps/$* $*
+
 # Catch non-existent files
 # KEEP THIS LAST!!
 %:
