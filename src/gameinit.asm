@@ -11,8 +11,8 @@ GameInit::
 	call CopyBytes
 	
 	; Load map
-	ld a, BANK(StartingMap)
-	ld hl, StartingMap
+	ld a, BANK(StartingMapLabel)
+	ld hl, StartingMapLabel
 	call LoadMapAtHLBankA
 	ld a, SPAWN_X
 	ld [wPlayerPos.x], a
