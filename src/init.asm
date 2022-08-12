@@ -30,7 +30,7 @@ Init::
 	ld hl, wShadowOAM
 	xor a
 	ld bc, wShadowOAM.end - wShadowOAM
-	call ByteFill
+	call FillBytes
 	
 	; Set palettes
 	ld a, %11100100

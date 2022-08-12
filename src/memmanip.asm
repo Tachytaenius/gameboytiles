@@ -7,7 +7,7 @@ SECTION "Memory Manipulation", ROM0
 ; param hl: Address to start filling at
 ; param bc: Number of bytes to fill
 ; destroys af bc hl 
-ByteFill::
+FillBytes::
 	inc b ; we bail the moment b hits 0, so include the last run
 	inc c ; same thing; include last byte
 	jr .HandleLoop
