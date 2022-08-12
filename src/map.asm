@@ -6,6 +6,15 @@ SECTION "Map", ROM0
 GetTilePropertiesAtBCAsXY::
 	; assumes you are already in the map's bank
 	; destroys bc, de, and hl
+	
+	; First, we check if we are in bounds
+	ld a, b
+	cp SCRN_X_B
+	jr nc, .outside ; if b >= SCRN_X_B then we are outside
+	ld a, c
+	cp SCRN_Y_B
+	jr nc, .outside
+	
 	ld a, [wCurMapAddress]
 	ld l, a
 	ld a, [wCurMapAddress + 1]
@@ -14,9 +23,14 @@ GetTilePropertiesAtBCAsXY::
 	add hl, de
 	jr GetTileTypeAtBCAsXY.skipReadingMapAddress
 
+.outside
+	ld a, OUT_OF_BOUNDS_TILE_PROPERTIES
+	ret
+
 GetTileTypeAtBCAsXY::
 	; assumes you are already in the map's bank
 	; destroys bc, de, and hl
+	; Does not check for in-bounds
 	ld a, [wCurMapAddress]
 	ld l, a
 	ld a, [wCurMapAddress + 1]
