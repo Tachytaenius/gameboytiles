@@ -20,6 +20,7 @@ local tmjTable = json.decode(tmjString)
 local GidToGameId = {} -- To have position 0 in tileset correspond to 0 etc
 for _, tileset in ipairs(tmjTable.tilesets) do
 	for gameIdPlusOne, tile in ipairs(tileset.tiles) do
+		assert(not GidToGameId[tileset.firstgid + tile.id])
 		GidToGameId[tileset.firstgid + tile.id] = gameIdPlusOne - 1
 	end
 end
