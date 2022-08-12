@@ -2,6 +2,8 @@ INCLUDE "lib/hardware.inc"
 
 SECTION "Video", ROM0
 
+; Unsets LCDCF_ON in rLCDC
+; destroys af
 StopLCD::
 	; if bit 7 (LCDCF_ON) is unset, cancel
 	ldh a, [rLCDC]
@@ -16,6 +18,8 @@ StopLCD::
 	ldh [rLCDC], a
 	ret
 
+; Sets LCDF_ON in rLCDC
+; destroys af
 StartLCD::
 	ldh a, [rLCDC]
 	or LCDCF_ON
