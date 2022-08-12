@@ -5,10 +5,10 @@ SECTION "Map", ROM0
 
 ; Returns the property at given x y coordinates in the current map, or a default if out of bounds
 ; Assumes the map's bank is loaded
-; @param b The x coordinate
-; @param c The y coordinate
-; @return a The requested property
-; @destroy af hl de
+; param b: The x coordinate
+; param c: The y coordinate
+; return a: The requested property
+; destroys af hl de
 GetTilePropertiesAtBCAsXY::
 	; First, we check if we are in bounds
 	ld a, b
@@ -48,9 +48,9 @@ GetTilePropertiesAtBCAsXY::
 	ret
 
 ; Loads the requested map
-; @param a The requested map's bank
-; @param hl The requested map's address
-; @destroy af hl bc de
+; param a: The requested map's bank
+; param hl: The requested map's address
+; destroys af hl bc de
 LoadMapAtHLBankA::
 	ld [wCurMapBank], a
 	rst SwapBank ; is not backed up
