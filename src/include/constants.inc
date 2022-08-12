@@ -45,7 +45,7 @@ DEF DIR_LEFT  EQU 3
 DEF PLAYER_MOVE_SPEED EQU 16
 DEF NUM_SUBPIXEL_BITS EQU 5
 
-DEF StartingMapLabel EQUS "xExampleMap"
+DEF StartingMapLabel EQUS "xExampleMapHouseInside"
 DEF SPAWN_X          EQU 7
 DEF SPAWN_Y          EQU 4
 
