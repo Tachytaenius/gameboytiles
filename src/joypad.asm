@@ -34,7 +34,7 @@ UpdateJoypad::
 	or b
 	cpl
 	; backup currently held buttons in d
-	ld d, a
+	ld c, a
 	
 	; put buttons not held last frame but held this frame at hJoypad.pressed
 	ld b, a
@@ -46,11 +46,11 @@ UpdateJoypad::
 	; put buttons held last frame but not held this frame at hJoypad.released
 	ldh a, [hJoypad.down] ; last frame's
 	ld b, a
-	ld a, d
+	ld a, c
 	cpl
 	and b
 	ldh [hJoypad.released], a
 	
-	ld a, d
+	ld a, c
 	ldh [hJoypad.down], a
 	ret
