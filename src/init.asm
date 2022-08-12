@@ -1,4 +1,3 @@
-INCLUDE "include/macros.inc"
 INCLUDE "lib/hardware.inc"
 
 SECTION "Init Variables", HRAM
