@@ -282,10 +282,10 @@ TryMovePlayer:
 	jr z, .doneTickingMovement
 	; we stepped onto a warp
 	ld b, a ; number of times to step forwards in the search (0 is no warp, 1 is 0 times, 2 is 1 time, etc)
-	ld a, [wCurMapWarpsAddress]
+	ld hl, wCurMapWarpsAddress
+	ld a, [hl+]
+	ld h, [hl]
 	ld l, a
-	ld a, [wCurMapWarpsAddress + 1]
-	ld h, a
 	ld de, sizeof_WARP_ATTRS ; for add hl, de
 .warpSearchLoop
 	dec b
