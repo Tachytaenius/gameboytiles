@@ -3,13 +3,14 @@ INCLUDE "lib/hardware.inc"
 SECTION "Video", ROM0
 
 StopLCD::
+	; if bit 7 (LCDCF_ON) is unset, cancel
 	ldh a, [rLCDC]
 	rlca
 	ret nc
-.wait
+.waitVBlank ; Wait for VBlank specifically, no other period is safe
 	ldh a, [rLY]
 	cp SCRN_Y
-	jr c, .wait
+	jr c, .waitVBlank
 	ldh a, [rLCDC]
 	res 7, a ; BG display
 	ldh [rLCDC], a
