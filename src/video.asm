@@ -20,12 +20,3 @@ StartLCD::
 	or LCDCF_ON
 	ldh [rLCDC], a
 	ret
-
-WaitVRAMAccess::
-	push af
-:
-	ldh a, [rSTAT]
-	and a, STATF_BUSY
-	jr nz, :-
-	pop af
-	ret
