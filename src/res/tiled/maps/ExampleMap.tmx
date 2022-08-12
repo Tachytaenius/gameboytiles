@@ -4,6 +4,7 @@
   <export target="../../../../res/tiled/maps/ExampleMap.tmj" format="json"/>
  </editorsettings>
  <properties>
+  <property name="bottomEdgeWarp" value="ExampleMap2"/>
   <property name="warp1" type="class" propertytype="Warp">
    <properties>
     <property name="destinationMap" value="ExampleMapHouseInside"/>

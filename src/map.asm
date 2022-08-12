@@ -94,11 +94,20 @@ LoadMapAtHLBankA::
 	ld bc, SCRN_X_B * SCRN_Y_B
 	add hl, bc
 	
-	; save warps address
+	; save edge warp addresses
 	ld a, l
-	ld [wCurMapWarpsAddress], a
+	ld [wCurMapEdgeWarpDestinationsAddress], a
 	ld a, h
-	ld [wCurMapWarpsAddress + 1], a
+	ld [wCurMapEdgeWarpDestinationsAddress + 1], a
+	
+	ld bc, EDGE_WARPS_SIZE
+	add hl, bc
+	
+	; save tile warps address
+	ld a, l
+	ld [wCurMapTileWarpDestinationsAddress], a
+	ld a, h
+	ld [wCurMapTileWarpDestinationsAddress + 1], a
 	
 	ret
 
@@ -110,5 +119,8 @@ wCurMapBank::
 wCurMapAddress::
 	ds 2
 
-wCurMapWarpsAddress::
+wCurMapEdgeWarpDestinationsAddress::
+	ds 2
+
+wCurMapTileWarpDestinationsAddress::
 	ds 2

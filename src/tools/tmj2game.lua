@@ -17,6 +17,14 @@ tmjFile:close()
 
 local tmjTable = json.decode(tmjString)
 
+local function findProperty(name)
+	for _, property in ipairs(tmjTable.properties) do
+		if property.name == name then
+			return property
+		end
+	end
+end
+
 local GidToGameId = {} -- To have position 0 in tileset correspond to 0 etc
 for _, tileset in ipairs(tmjTable.tilesets) do
 	for gameIdPlusOne, tile in ipairs(tileset.tiles) do
@@ -31,14 +39,23 @@ local incString =
 	".tileTypes\n" .. -- could easily make this exported if need be
 	"\tINCBIN \"" .. outputPath .. "-tile-types.bin\"\n" ..
 	".tileProperties\n" ..
-	"\tINCBIN \"" .. outputPath .. "-tile-properties.bin\"\n" ..
-	".warps\n"
+	"\tINCBIN \"" .. outputPath .. "-tile-properties.bin\"\n"
 
+for _, edge in ipairs({"left", "right", "top", "bottom"}) do
+	incString = incString .. "." .. edge .. "EdgeWarp\n"
+	local property = findProperty(edge .. "EdgeWarp")
+	if property then
+		incString = incString .. "\tDefEdgeWarp x" .. property.value .. "\n"
+	else
+		incString = incString .. "\tdb 0\n\tdw 0\n"
+	end
+end
+
+incString = incString .. ".tileWarps\n"
 for i = warpsIterationStart, warpsIterationStop do
-	for _, property in ipairs(tmjTable.properties) do
-		if property.name == "warp" .. i then
-			incString = incString .. "\tDefWarp " .. property.value.destinationX .. ", " .. property.value.destinationY .. ", x" .. property.value.destinationMap .. "\n"
-		end
+	local property = findProperty("warp" .. i)
+	if property then
+		incString = incString .. "\tDefTileWarp " .. property.value.destinationX .. ", " .. property.value.destinationY .. ", x" .. property.value.destinationMap .. "\n"
 	end
 end
 

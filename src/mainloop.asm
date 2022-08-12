@@ -73,6 +73,16 @@ SetPriorityToCurrentInput:
 	ld [wPlayerMovementPriority], a
 	ret
 
+EdgeWarpCommonCode:
+	add hl, bc
+	ld a, [hl+]
+	ld b, a ; backup bank
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld a, b
+ 	jp LoadMapAtHLBankA
+
 TryMovePlayer:
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
@@ -229,13 +239,13 @@ TryMovePlayer:
 	; Tick movement
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
-	jr z, .doneTickingMovement
+	jp z, .doneTickingMovement
 	ld a, [wPlayerMoveSpeed]
 	ld b, a
 	ld a, [wPlayerMoveProgress]
 	add b
 	ld [wPlayerMoveProgress], a
-	jr nc, .doneTickingMovement
+	jp nc, .doneTickingMovement
 	; overflowed, we are done moving
 	ld a, [wPlayerMoveDirection]
 	
@@ -273,6 +283,63 @@ TryMovePlayer:
 	ld [wPlayerMoveDirection], a
 	
 	; check for warp
+	; walking off map edge first
+.checkMovedOffLeftEdge
+	ld a, [wPlayerPos.x]
+	cp -1
+	jr nz, .checkMovedOffRightEdge
+	; walked off left edge!
+	ld hl, wCurMapEdgeWarpDestinationsAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld bc, sizeof_EDGE_WARP_ATTRS * 0
+	call EdgeWarpCommonCode
+	ld a, SCRN_X_B - 1 ; wrap pos
+	ld [wPlayerPos.x], a
+	jr .doneTickingMovement
+.checkMovedOffRightEdge
+	cp SCRN_X_B
+	jr nz, .checkMovedOffTopEdge
+	; walked off right edge
+	ld hl, wCurMapEdgeWarpDestinationsAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld bc, sizeof_EDGE_WARP_ATTRS * 1
+	call EdgeWarpCommonCode
+	xor a ; wrap pos
+	ld [wPlayerPos.x], a
+	jr .doneTickingMovement
+.checkMovedOffTopEdge
+	ld a, [wPlayerPos.y]
+	cp -1
+	jr nz, .checkMovedOffBottomEdge
+	; walked off top edge
+	ld hl, wCurMapEdgeWarpDestinationsAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld bc, sizeof_EDGE_WARP_ATTRS * 2
+	call EdgeWarpCommonCode
+	ld a, SCRN_Y_B - 1 ; wrap pos
+	ld [wPlayerPos.y], a
+	jr .doneTickingMovement
+.checkMovedOffBottomEdge
+	cp SCRN_Y_B
+	jr nz, .checkWarpTile
+	; walked off bottom edge
+	ld hl, wCurMapEdgeWarpDestinationsAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
+	ld bc, sizeof_EDGE_WARP_ATTRS * 3
+	call EdgeWarpCommonCode
+	xor a ; wrap pos
+	ld [wPlayerPos.y], a
+	jr .doneTickingMovement
+	
+.checkWarpTile
 	ld a, [wPlayerPos.x]
 	ld b, a
 	ld a, [wPlayerPos.y]
@@ -282,7 +349,7 @@ TryMovePlayer:
 	jr z, .doneTickingMovement
 	; we stepped onto a warp
 	ld b, a ; number of times to step forwards in the search (0 is no warp, 1 is 0 times, 2 is 1 time, etc)
-	ld hl, wCurMapWarpsAddress
+	ld hl, wCurMapTileWarpDestinationsAddress
 	ld a, [hl+]
 	ld h, [hl]
 	ld l, a
