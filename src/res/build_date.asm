@@ -1,4 +1,3 @@
-
 SECTION "Build date", ROM0
 
     db "Built "

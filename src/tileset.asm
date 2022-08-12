@@ -7,6 +7,7 @@ MACRO define_tile
 ENDM
 
 SECTION "Tileset graphics", ROM0
+
 TilesetGraphics::
 	RSRESET
 	define_tile TILE_EMPTY, "res/empty.2bpp"

@@ -25,7 +25,7 @@ for _, tileset in ipairs(tmjTable.tilesets) do
 end
 
 local incString =
-	"SECTION \"" .. mapName .. "\", ROMX\n" ..
+	"SECTION \"" .. mapName .. "\", ROMX\n\n" ..
 	"x" .. mapName .. "::\n" ..
 	".tileTypes\n" .. -- could easily make this exported if need be
 	"\tINCBIN \"" .. outputPath .. "-tile-types.bin\"\n" ..
