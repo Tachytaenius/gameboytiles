@@ -14,6 +14,7 @@ TilesetGraphics::
 	DefineTile TILE_WALL, "res/wall.2bpp"
 	DefineTile TILE_PLAYER, "res/player.2bpp"
 	DefineTile TILE_FLOOR, "res/floor.2bpp"
+	DefineTile TILE_EMPTY_BLACK, "res/empty_black.2bpp"
 .end::
 
 DEF NUM_TILES RB 0
