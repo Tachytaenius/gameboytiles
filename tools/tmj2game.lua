@@ -45,7 +45,7 @@ for _, edge in ipairs({"left", "right", "top", "bottom"}) do
 	incString = incString .. "." .. edge .. "EdgeWarp\n"
 	local property = findProperty(edge .. "EdgeWarp")
 	if property then
-		incString = incString .. "\tDefEdgeWarp x" .. property.value .. "\n"
+		incString = incString .. "\tdefine_edge_warp x" .. property.value .. "\n"
 	else
 		incString = incString .. "\tdb 0\n\tdw 0\n"
 	end
@@ -55,7 +55,7 @@ incString = incString .. ".tileWarps\n"
 for i = warpsIterationStart, warpsIterationStop do
 	local property = findProperty("warp" .. i)
 	if property then
-		incString = incString .. "\tDefTileWarp " .. property.value.destinationX .. ", " .. property.value.destinationY .. ", x" .. property.value.destinationMap .. "\n"
+		incString = incString .. "\tdefine_tile_warp " .. property.value.destinationX .. ", " .. property.value.destinationY .. ", x" .. property.value.destinationMap .. "\n"
 	end
 end
 
