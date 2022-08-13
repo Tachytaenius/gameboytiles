@@ -28,7 +28,7 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <layer id="2" name="Collision" width="20" height="18" opacity="0">
+ <layer id="2" name="Collision" width="20" height="18">
   <data encoding="csv">
 10,10,10,10,10,10,10,10,10,10,10,10,10,10,9,9,9,10,10,10,
 10,10,10,9,9,9,9,9,10,9,9,9,9,9,9,9,9,10,10,10,

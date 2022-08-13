@@ -11,3 +11,4 @@ ENDM
 INCLUDE "res/maps/ExampleMap.inc"
 INCLUDE "res/maps/ExampleMapHouseInside.inc"
 INCLUDE "res/maps/ExampleMap2.inc"
+INCLUDE "res/maps/ExampleMap3.inc"

@@ -34,7 +34,7 @@
 5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
 </data>
  </layer>
- <layer id="2" name="Collision" width="20" height="18" opacity="0">
+ <layer id="2" name="Collision" width="20" height="18">
   <data encoding="csv">
 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
