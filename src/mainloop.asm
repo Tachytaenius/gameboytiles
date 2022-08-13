@@ -82,6 +82,10 @@ SetPriorityToCurrentInput:
 	ret
 
 EdgeWarpCommonCode:
+	ld hl, wCurMapEdgeWarpDestinationsAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
 	add hl, bc
 	ld a, [hl+]
 	ld b, a ; backup bank
@@ -297,10 +301,6 @@ TryMovePlayer:
 	cp -1
 	jr nz, .checkMovedOffRightEdge
 	; walked off left edge!
-	ld hl, wCurMapEdgeWarpDestinationsAddress
-	ld a, [hl+]
-	ld h, [hl]
-	ld l, a
 	ld bc, sizeof_EDGE_WARP_ATTRS * 0
 	call EdgeWarpCommonCode
 	ld a, SCRN_X_B - 1 ; wrap pos
@@ -310,10 +310,6 @@ TryMovePlayer:
 	cp SCRN_X_B
 	jr nz, .checkMovedOffTopEdge
 	; walked off right edge
-	ld hl, wCurMapEdgeWarpDestinationsAddress
-	ld a, [hl+]
-	ld h, [hl]
-	ld l, a
 	ld bc, sizeof_EDGE_WARP_ATTRS * 1
 	call EdgeWarpCommonCode
 	xor a ; wrap pos
@@ -324,10 +320,6 @@ TryMovePlayer:
 	cp -1
 	jr nz, .checkMovedOffBottomEdge
 	; walked off top edge
-	ld hl, wCurMapEdgeWarpDestinationsAddress
-	ld a, [hl+]
-	ld h, [hl]
-	ld l, a
 	ld bc, sizeof_EDGE_WARP_ATTRS * 2
 	call EdgeWarpCommonCode
 	ld a, SCRN_Y_B - 1 ; wrap pos
@@ -337,10 +329,6 @@ TryMovePlayer:
 	cp SCRN_Y_B
 	jr nz, .checkWarpTile
 	; walked off bottom edge
-	ld hl, wCurMapEdgeWarpDestinationsAddress
-	ld a, [hl+]
-	ld h, [hl]
-	ld l, a
 	ld bc, sizeof_EDGE_WARP_ATTRS * 3
 	call EdgeWarpCommonCode
 	xor a ; wrap pos
