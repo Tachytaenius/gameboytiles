@@ -54,10 +54,45 @@ GetTilePropertiesAtBCAsXY::
 LoadMapAtHLBankA::
 	ld [wCurMapBank], a
 	rst SwapBank ; is not backed up
+	
+	ld a, 1
+	ld [wLoadMapTileTypesIntoVRAMFlag], a
+	
 	ld a, l
 	ld [wCurMapAddress], a
 	ld a, h
 	ld [wCurMapAddress + 1], a
+	
+	; skip over tile types and properties
+	ld bc, SCRN_X_B * SCRN_Y_B * 2
+	add hl, bc
+	
+	; save edge warp addresses
+	ld a, l
+	ld [wCurMapEdgeWarpDestinationsAddress], a
+	ld a, h
+	ld [wCurMapEdgeWarpDestinationsAddress + 1], a
+	
+	ld bc, EDGE_WARPS_SIZE
+	add hl, bc
+	
+	; save tile warps address
+	ld a, l
+	ld [wCurMapTileWarpDestinationsAddress], a
+	ld a, h
+	ld [wCurMapTileWarpDestinationsAddress + 1], a
+	
+	ret
+
+; Loads map's tiles into VRAM
+LoadMapTileTypesIntoVRAM::
+	xor a
+	ld [wLoadMapTileTypesIntoVRAMFlag], a
+	
+	ld hl, wCurMapAddress
+	ld a, [hl+]
+	ld h, [hl]
+	ld l, a
 	
 	ld bc, _SCRN0
 	ld d, SCRN_Y_B ; number of times to loop
@@ -78,7 +113,7 @@ LoadMapAtHLBankA::
 	
 .nextRow
 	dec d
-	jr z, .finishLoadingTileTypes
+	ret z
 	
 	ld a, c
 	add SCRN_VX_B - SCRN_X_B
@@ -89,27 +124,6 @@ LoadMapAtHLBankA::
 	
 	jr .rowLoop
 
-.finishLoadingTileTypes
-	; skip over tile properties
-	ld bc, SCRN_X_B * SCRN_Y_B
-	add hl, bc
-	
-	; save edge warp addresses
-	ld a, l
-	ld [wCurMapEdgeWarpDestinationsAddress], a
-	ld a, h
-	ld [wCurMapEdgeWarpDestinationsAddress + 1], a
-	
-	ld bc, EDGE_WARPS_SIZE
-	add hl, bc
-	
-	; save tile warps address
-	ld a, l
-	ld [wCurMapTileWarpDestinationsAddress], a
-	ld a, h
-	ld [wCurMapTileWarpDestinationsAddress + 1], a
-	
-	ret
 
 SECTION "Map Information", WRAM0
 

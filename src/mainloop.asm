@@ -24,6 +24,9 @@ wPlayerMovementPriority::
 wLastPlayerInputs::
 	ds 1
 
+wLoadMapTileTypesIntoVRAMFlag::
+	ds 1
+
 SECTION "Main Loop", ROM0
 
 MainLoop::
@@ -34,6 +37,12 @@ MainLoop::
 	jr z, MainLoop
 	xor a
 	ldh [hVBlankFlag], a
+	
+	ld a, [wLoadMapTileTypesIntoVRAMFlag]
+	and a
+	jr z, :+
+	call LoadMapTileTypesIntoVRAM
+:
 	
 	call UpdateJoypad
 	call TryMovePlayer
