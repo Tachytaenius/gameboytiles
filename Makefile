@@ -113,7 +113,7 @@ res/%.2bpp: res/%.png
 
 # Define how to compress files using the PackBits16 codec
 # Compressor script requires Python 3
-res/%.pb16: src/tools/pb16.py res/%
+res/%.pb16: tools/pb16.py res/%
 	@mkdir -p $(@D)
 	$^ $@
 
@@ -123,7 +123,7 @@ res/%.tmj: res/tiled/maps/%.tmx
 	$(TILED) --export-map --embed-tilesets $^ $@
 
 # Convert tiled map exports to assembly files and INCBIN'd map data files
-res/maps/%.inc res/maps/%-tile-types.bin res/maps/%-tile-properties.bin: src/tools/tmj2game.lua res/%.tmj
+res/maps/%.inc res/maps/%-tile-types.bin res/maps/%-tile-properties.bin: tools/tmj2game.lua res/%.tmj
 	@mkdir -p $(@D)
 	$(LUA) $^ res/maps/$* $*
 

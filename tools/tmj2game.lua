@@ -1,4 +1,4 @@
-local json = require("src.tools.lib.json")
+local json = require("tools.lib.json")
 
 -- expects embedded tilesets
 
