@@ -50,7 +50,7 @@ GetTilePropertiesAtBCAsXY::
 ; Loads the requested map
 ; param a: The requested map's bank
 ; param hl: The requested map's address
-; destroys af hl bc de
+; destroys af hl bc
 LoadMapAtHLBankA::
 	ld [wCurMapBank], a
 	rst SwapBank ; is not backed up
