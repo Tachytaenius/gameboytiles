@@ -9,5 +9,6 @@ VBlankVector::
 	push af
 	ld a, 1
 	ldh [hVBlankFlag], a
+	call hOAMDMA
 	pop af
 	reti

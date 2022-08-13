@@ -36,7 +36,6 @@ MainLoop::
 	ldh [hVBlankFlag], a
 	
 	call UpdateJoypad
-	call hOAMDMA
 	call TryMovePlayer
 	
 .finishMainLoop
