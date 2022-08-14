@@ -3,6 +3,7 @@ local json = require("tools.lib.json")
 -- expects embedded tilesets
 
 local mapBinLength = 20 * 18
+local tilePropertySlipperinessShift = 5
 local tilePropertyCollisionShift = 4
 local warpsShift = 0
 local warpsIterationStart, warpsIterationStop = 1, 15
@@ -73,6 +74,10 @@ for _, layer in ipairs(tmjTable.layers) do
 	elseif layer.name == "Collision" then
 		for i, tileGid in ipairs(layer.data) do
 			tilePropertiesBinTable[i] = tilePropertiesBinTable[i] | GidToGameId[tileGid] << tilePropertyCollisionShift
+		end
+	elseif layer.name == "Slipperiness" then
+		for i, tileGid in ipairs(layer.data) do
+			tilePropertiesBinTable[i] = tilePropertiesBinTable[i] | GidToGameId[tileGid] << tilePropertySlipperinessShift
 		end
 	elseif layer.name == "Warps" then
 		for i, tileGid in ipairs(layer.data) do

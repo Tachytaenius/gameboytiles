@@ -27,6 +27,12 @@ wLastPlayerInputs::
 wLoadMapTileTypesIntoVRAMFlag::
 	ds 1
 
+wCurrentTilePropertiesCache:
+	ds 1
+
+wPlayerMoveDirectionCache:
+	ds 1
+
 SECTION "Main Loop", ROM0
 
 MainLoop::
@@ -86,14 +92,32 @@ EdgeWarpCommonCode:
 	ld a, [hl+]
 	ld h, [hl]
 	ld l, a
-	add hl, bc
+	add hl, de
 	ld a, [hl+]
 	ld b, a ; backup bank
 	ld a, [hl+]
 	ld h, [hl]
 	ld l, a
 	ld a, b
- 	jp LoadMapAtHLBankA
+ 	call LoadMapAtHLBankA
+	; Now check if we entered the map onto a slippery tile
+	ld a, [wPlayerPos.x]
+	ld b, a
+	ld a, [wPlayerPos.y]
+	ld c, a
+	call GetTilePropertiesAtBCAsXY
+	and TILEPROP_SLIPPERINESS_MASK
+	ret z
+	ld a, [wPlayerMoveDirectionCache]
+	ld [wPlayerMoveDirection], a
+	ret
+
+StopPlayerMovement:
+	xor a
+	ld [wPlayerMoveProgress], a
+	ld a, DIR_NONE
+	ld [wPlayerMoveDirection], a
+	ret
 
 TryMovePlayer:
 	ld a, [wPlayerMoveDirection]
@@ -289,10 +313,18 @@ TryMovePlayer:
 	ld [wPlayerPos.x], a
 	; fallthrough
 .doneChangingPlayerPos
-	xor a
-	ld [wPlayerMoveProgress], a
-	ld a, DIR_NONE
-	ld [wPlayerMoveDirection], a
+	ld a, [wPlayerPos.x]
+	ld b, a
+	ld a, [wPlayerPos.y]
+	ld c, a
+	call GetTilePropertiesAtBCAsXY
+	ld [wCurrentTilePropertiesCache], a
+	and TILEPROP_SLIPPERINESS_MASK
+	jr nz, .slippery
+	ld a, [wPlayerMoveDirection]
+	ld [wPlayerMoveDirectionCache], a
+	call StopPlayerMovement
+.slippery
 	
 	; check for warp
 	; walking off map edge first
@@ -301,46 +333,42 @@ TryMovePlayer:
 	cp -1
 	jr nz, .checkMovedOffRightEdge
 	; walked off left edge!
-	ld bc, sizeof_EDGE_WARP_ATTRS * 0
-	call EdgeWarpCommonCode
 	ld a, SCRN_X_B - 1 ; wrap pos
 	ld [wPlayerPos.x], a
+	ld de, sizeof_EDGE_WARP_ATTRS * 0
+	call EdgeWarpCommonCode
 	jr .doneTickingMovement
 .checkMovedOffRightEdge
 	cp SCRN_X_B
 	jr nz, .checkMovedOffTopEdge
 	; walked off right edge
-	ld bc, sizeof_EDGE_WARP_ATTRS * 1
-	call EdgeWarpCommonCode
 	xor a ; wrap pos
 	ld [wPlayerPos.x], a
+	ld de, sizeof_EDGE_WARP_ATTRS * 1
+	call EdgeWarpCommonCode
 	jr .doneTickingMovement
 .checkMovedOffTopEdge
 	ld a, [wPlayerPos.y]
 	cp -1
 	jr nz, .checkMovedOffBottomEdge
 	; walked off top edge
-	ld bc, sizeof_EDGE_WARP_ATTRS * 2
-	call EdgeWarpCommonCode
 	ld a, SCRN_Y_B - 1 ; wrap pos
 	ld [wPlayerPos.y], a
+	ld de, sizeof_EDGE_WARP_ATTRS * 2
+	call EdgeWarpCommonCode
 	jr .doneTickingMovement
 .checkMovedOffBottomEdge
 	cp SCRN_Y_B
 	jr nz, .checkWarpTile
 	; walked off bottom edge
-	ld bc, sizeof_EDGE_WARP_ATTRS * 3
-	call EdgeWarpCommonCode
 	xor a ; wrap pos
 	ld [wPlayerPos.y], a
+	ld de, sizeof_EDGE_WARP_ATTRS * 3
+	call EdgeWarpCommonCode
 	jr .doneTickingMovement
-	
+
 .checkWarpTile
-	ld a, [wPlayerPos.x]
-	ld b, a
-	ld a, [wPlayerPos.y]
-	ld c, a
-	call GetTilePropertiesAtBCAsXY
+	ld a, [wCurrentTilePropertiesCache]
 	and TILEPROP_WARP_MASK
 	jr z, .doneTickingMovement
 	; we stepped onto a warp
@@ -366,6 +394,7 @@ TryMovePlayer:
 	ld h, [hl]
 	ld l, a
 	ld a, b
+	call StopPlayerMovement	
 	call LoadMapAtHLBankA
 	
 .doneTickingMovement
