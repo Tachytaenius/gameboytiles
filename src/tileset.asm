@@ -16,6 +16,7 @@ TilesetGraphics::
 	define_tile TILE_FLOOR, "res/floor.2bpp"
 	define_tile TILE_EMPTY_BLACK, "res/empty_black.2bpp"
 	define_tile TILE_DOOR, "res/door.2bpp"
+	define_tile TILE_ICE, "res/ice.2bpp"
 .end::
 
 DEF NUM_TILES RB 0
