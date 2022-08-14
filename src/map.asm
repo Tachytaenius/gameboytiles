@@ -85,6 +85,7 @@ LoadMapAtHLBankA::
 	ret
 
 ; Loads map's tiles into VRAM
+; destroys af hl bc d
 LoadMapTileTypesIntoVRAM::
 	xor a
 	ld [wLoadMapTileTypesIntoVRAMFlag], a
