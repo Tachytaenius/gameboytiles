@@ -1,6 +1,14 @@
 INCLUDE "lib/hardware.inc"
 INCLUDE "include/constants.inc"
 
+DEF DIR_NONE  EQU -1
+DEF DIR_UP    EQU 0
+DEF DIR_RIGHT EQU 1
+DEF DIR_DOWN  EQU 2
+DEF DIR_LEFT  EQU 3
+
+EXPORT DIR_NONE
+
 SECTION "Main Loop Variables", WRAM0
 
 wPlayerPos::
