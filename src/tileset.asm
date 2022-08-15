@@ -1,5 +1,3 @@
-INCLUDE "include/constants.inc"
-
 MACRO define_tile
 	DEF \1 RB
 	EXPORT \1
