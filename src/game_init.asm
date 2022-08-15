@@ -1,5 +1,10 @@
 INCLUDE "lib/hardware.inc"
-INCLUDE "include/constants.inc"
+
+DEF PLAYER_MOVE_SPEED EQU 16
+
+DEF StartingMapLabel EQUS "xExampleMapHouseInside"
+DEF SPAWN_X          EQU 7
+DEF SPAWN_Y          EQU 4
 
 SECTION "Game Init", ROM0
 
