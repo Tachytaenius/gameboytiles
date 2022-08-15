@@ -33,6 +33,9 @@ wCurrentTilePropertiesCache:
 wPlayerMoveDirectionCache:
 	ds 1
 
+wPlayerMoveSpeedThisTile:
+	ds 1
+
 SECTION "Main Loop", ROM0
 
 MainLoop::
@@ -270,13 +273,21 @@ TryMovePlayer:
 	ld [wPlayerMoveDirection], a
 	xor a
 	ld [wPlayerMoveProgress], a
+	; If B is not held then half speed
+	ldh a, [hJoypad.down]
+	and JOY_B_MASK
+	ld a, [wPlayerMoveSpeed]
+	jr nz, :+
+	srl a
+:
+	ld [wPlayerMoveSpeedThisTile], a
 	
 .skipAllowingMove
 	; Tick movement
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
 	jp z, .doneTickingMovement
-	ld a, [wPlayerMoveSpeed]
+	ld a, [wPlayerMoveSpeedThisTile]
 	ld b, a
 	ld a, [wPlayerMoveProgress]
 	add b
