@@ -1,6 +1,6 @@
 INCLUDE "lib/hardware.inc"
 
-DEF PLAYER_MOVE_SPEED EQU 16
+DEF PLAYER_MOVE_SPEED EQU 24
 
 DEF StartingMapLabel EQUS "xExampleMapHouseInside"
 DEF SPAWN_X          EQU 7
