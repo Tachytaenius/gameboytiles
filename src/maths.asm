@@ -2,8 +2,11 @@ SECTION "Maths", ROM0
 
 ; Taken from pokecrystal
 
+; param a: Multiplier
+; param c: Multiplicand
+; return a: Product
+; destroys f
 SimpleMultiply::
-; Return a * c.
 	and a
 	ret z
 
@@ -17,8 +20,13 @@ SimpleMultiply::
 	pop bc
 	ret
 
+; Divide a by c
+; param a: Dividend
+; param c: Divisor
+; return a: Remainder
+; return b: Quotient
+; destroys f
 SimpleDivide::
-; Divide a by c. Return quotient b and remainder a.
 	ld b, 0
 .loop
 	inc b
