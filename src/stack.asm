@@ -1,4 +1,4 @@
-INCLUDE "include/constants.inc"
+DEF STACK_SIZE EQU $80 ; In words, not bytes
 
 SECTION "Stack", WRAM0
 
