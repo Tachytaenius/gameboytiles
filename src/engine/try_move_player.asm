@@ -342,7 +342,7 @@ TryMovePlayer::
 	ld a, [hl+]
 	ld h, [hl]
 	ld l, a
-	ld de, sizeof_WARP_ATTRS ; for add hl, de
+	ld de, sizeof_TILE_WARP_ATTRS ; for add hl, de
 .warpSearchLoop
 	dec b
 	jr z, .warpSearchLoopDone

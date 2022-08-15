@@ -27,9 +27,3 @@ DEF StartingMapLabel EQUS "xExampleMapHouseInside"
 DEF SPAWN_X          EQU 7
 DEF SPAWN_Y          EQU 4
 
-RSRESET
-DEF WARP_DEST_X          RB 1
-DEF WARP_DEST_Y          RB 1
-DEF WARP_DEST_BANK       RB 1
-DEF WARP_DEST_ADDRESS    RB 2
-DEF sizeof_WARP_ATTRS    RB 0
