@@ -286,10 +286,38 @@ TryMovePlayer::
 	ld [wCurrentTilePropertiesCache], a
 	and TILEPROP_SLIPPERINESS_MASK
 	jr nz, .slippery
+.notSlippery
 	ld a, [wPlayerMoveDirection]
-	ld [wPlayerMoveDirectionCache], a
+	ld [wPlayerMoveDirectionCache], a ; in case we walk off a map into a slippery tile and do indeed need to slip
 	call StopPlayerMovement
+	jr .doneCheckingSlipperiness
 .slippery
+	ld a, [wPlayerMoveDirection]
+.slipperyCheckMovingLeft
+	cp DIR_LEFT
+	jr nz, .slipperyCheckMovingRight
+	dec b
+	jr .slipperyDoneCheckingMoveDirection
+.slipperyCheckMovingRight
+	cp DIR_RIGHT
+	jr nz, .slipperyCheckMovingUp
+	inc b
+	jr .slipperyDoneCheckingMoveDirection
+.slipperyCheckMovingUp
+	cp DIR_UP
+	jr nz, .slipperyCheckMovingDown
+	dec c
+	jr .slipperyDoneCheckingMoveDirection
+.slipperyCheckMovingDown
+	; assume it's down
+	inc c
+	; fallthrough
+.slipperyDoneCheckingMoveDirection
+	call GetTilePropertiesAtBCAsXY
+	and TILEPROP_SOLIDITY_MASK
+	jr z, .doneCheckingSlipperiness
+	call StopPlayerMovement
+.doneCheckingSlipperiness
 	
 	; check for warp
 	; walking off map edge first
