@@ -37,10 +37,9 @@ GameInit::
 	ld [wPlayerMoveSpeed], a
 	xor a
 	ld [wPlayerMoveProgress], a
-	ld [wLastPlayerInputs], a
+	ld [wPlayerMovementPriority], a
 	ld a, DIR_NONE
 	ld [wPlayerMoveDirection], a
-	ld [wPlayerMovementPriority], a ; just to shut up BGB's "uninitialised memory", really, it works fine
 	
 	call UpdatePlayerSpritePos
 	

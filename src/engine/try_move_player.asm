@@ -13,37 +13,6 @@ wPlayerMoveSpeedThisTile:
 
 SECTION "Try Move Player", ROM0
 
-SetPriorityToCurrentInput:
-	ldh a, [hJoypad.down]
-	
-.checkNewInputLeft
-	bit JOY_LEFT_BIT, a
-	jr z, .checkNewInputRight
-	ld a, DIR_LEFT
-	ld [wPlayerMovementPriority], a
-	ret
-
-.checkNewInputRight
-	bit JOY_RIGHT_BIT, a
-	jr z, .checkNewInputUp
-	ld a, DIR_RIGHT
-	ld [wPlayerMovementPriority], a
-	ret
-
-.checkNewInputUp
-	bit JOY_UP_BIT, a
-	jr z, .checkNewInputDown
-	ld a, DIR_UP
-	ld [wPlayerMovementPriority], a
-	ret
-
-.checkNewInputDown
-	bit JOY_DOWN_BIT, a
-	ret z
-	ld a, DIR_DOWN
-	ld [wPlayerMovementPriority], a
-	ret
-
 EdgeWarpCommonCode:
 	ld hl, wCurMapEdgeWarpDestinationsAddress
 	ld a, [hl+]
@@ -79,105 +48,48 @@ StopPlayerMovement:
 TryMovePlayer::
 	ld a, [wPlayerMoveDirection]
 	cp DIR_NONE
-	jp nz, .skipAllowingMove	
+	jp nz, .skipAllowingMove
 	
-	ldh a, [hJoypad.down] ; get inputs
+	ldh a, [hJoypad.down]
 	ld b, a
-	
-	; if the priority input was un-inputted since last movement check, then set priority input to the first found direction being inputted
-	ld a, [wLastPlayerInputs]
-	ld c, a
-	ld a, b
-	cpl
-	and c
-	; now: a contains inputs released since last movement check
-	ld c, a ; backup
 	ld a, [wPlayerMovementPriority]
-.checkPriorityUp1
-	cp DIR_UP
-	jr nz, .checkPriorityRight1
-	ld a, c ; restore
-	and JOY_UP_MASK
-	call nz, SetPriorityToCurrentInput
-	jr .doneCheckingPriority1
-.checkPriorityRight1
-	cp DIR_RIGHT
-	jr nz, .checkPriorityDown1
-	ld a, c
-	and JOY_RIGHT_MASK
-	call nz, SetPriorityToCurrentInput
-	jr .doneCheckingPriority1
-.checkPriorityDown1
-	cp DIR_DOWN
-	jr nz, .priorityLeft1
-	ld a, c
-	and JOY_DOWN_MASK
-	call nz, SetPriorityToCurrentInput
-	jr .doneCheckingPriority1
-.priorityLeft1
-	ld a, c
-	and JOY_LEFT_MASK
-	call nz, SetPriorityToCurrentInput
-.doneCheckingPriority1
+	and b
+	jr nz, .skipChangingDirection
 	
-	; if a down input has been pressed since the last movement input check, set it as priority
-	ld a, [wLastPlayerInputs]
-	cpl
-	and b ; b = inputs
-	; a = new inputs since last movement input check
-.checkNewInputLeft
+.changeDirection
+	ldh a, [hJoypad.down]
+.changeDirectionTryLeft
 	bit JOY_LEFT_BIT, a
-	jr z, .checkNewInputRight
-	ld a, DIR_LEFT
-	ld [wPlayerMovementPriority], a
-	jr .doneCheckingNewInput
-.checkNewInputRight
+	jr z, .changeDirectionTryRight
+	ld a, JOY_LEFT_MASK
+	jr .doneChangeDirection
+.changeDirectionTryRight
 	bit JOY_RIGHT_BIT, a
-	jr z, .checkNewInputUp
-	ld a, DIR_RIGHT
-	ld [wPlayerMovementPriority], a
-	jr .doneCheckingNewInput
-.checkNewInputUp
+	jr z, .changeDirectionTryUp
+	ld a, JOY_RIGHT_MASK
+	jr .doneChangeDirection
+.changeDirectionTryUp
 	bit JOY_UP_BIT, a
-	jr z, .checkNewInputDown
-	ld a, DIR_UP
-	ld [wPlayerMovementPriority], a
-	jr .doneCheckingNewInput
-.checkNewInputDown
+	jr z, .changeDirectionTryDown
+	ld a, JOY_UP_MASK
+	jr .doneChangeDirection
+.changeDirectionTryDown
 	bit JOY_DOWN_BIT, a
-	jr z, .doneCheckingNewInput
-	ld a, DIR_DOWN
+	jr z, .changeDirectionNone
+	ld a, JOY_DOWN_MASK
+	jr .doneChangeDirection
+.changeDirectionNone
+	xor a
+	; fallthrough
+.doneChangeDirection
 	ld [wPlayerMovementPriority], a
-.doneCheckingNewInput
-	
-	; save inputs for next frame
-	ld a, b ; inputs
-	ld [wLastPlayerInputs], a
+.skipChangingDirection
 	
 	; filter inputs
+	ldh a, [hJoypad.down]
+	ld b, a
 	ld a, [wPlayerMovementPriority]
-.checkPriorityUp2
-	cp DIR_UP
-	jr nz, .checkPriorityRight2
-	ld a, b ; inputs
-	and ~(JOY_RIGHT_MASK | JOY_DOWN_MASK | JOY_LEFT_MASK)
-	jr .doneCheckingPriority2
-.checkPriorityRight2
-	cp DIR_RIGHT
-	jr nz, .checkPriorityDown2
-	ld a, b
-	and ~(JOY_UP_MASK | JOY_DOWN_MASK | JOY_LEFT_MASK)
-	jr .doneCheckingPriority2
-.checkPriorityDown2
-	cp DIR_DOWN
-	jr nz, .priorityLeft2
-	ld a, b
-	and ~(JOY_RIGHT_MASK | JOY_UP_MASK | JOY_LEFT_MASK)
-	jr .doneCheckingPriority2
-.priorityLeft2
-	ld a, b
-	and ~(JOY_RIGHT_MASK | JOY_DOWN_MASK | JOY_UP_MASK)
-.doneCheckingPriority2
+	and b
 	
 	; now: a = filtered inputs
 	; next: b = x, c = y, d = direction

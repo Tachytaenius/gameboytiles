@@ -32,9 +32,6 @@ wPlayerMoveSpeed::
 wPlayerMovementPriority::
 	ds 1
 
-wLastPlayerInputs::
-	ds 1
-
 wLoadMapTileTypesIntoVRAMFlag::
 	ds 1
 
