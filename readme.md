@@ -20,3 +20,4 @@ You can adjust the opacity of each layer as needed for easier editing
 - "Warps" uses the Warps tileset and defines which warp destination (or none) a tile references
 - "Types" is the displayed tiles and uses the Tileset tileset
 - "Collision" is the collision map and uses the Boolean tileset, true (black) (1) for solid collision
+- "Slipperiness" uses the Boolean tileset to define whether you can stop moving and change direction on a tile.
